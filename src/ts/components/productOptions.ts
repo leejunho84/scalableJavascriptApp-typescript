@@ -12,7 +12,11 @@ export default class ProductOption extends Component {
         components.map((component)=>{
             component.addEvent('change', function(this:HTMLElement, ...args:any){
 				console.log(args);
-			});
+            });
+            
+            component.addEvent('changeQuantity', function(this:HTMLElement, ...args:any){
+                console.log(args);
+            });
         });
     }
     componentWillUnmount():void{}

@@ -15,7 +15,7 @@ export default class Core implements ICore{
 		}
 
 		Promise.all(modules.map(async (name:string)=>{
-			const MODULE = await import(`./modules/${name}`)
+			const MODULE = await import(`./modules/${name}.js`)
 			return MODULE;
 		})).then((resolve)=>{
 			resolve.map((module)=>{
@@ -51,7 +51,7 @@ export default class Core implements ICore{
 		});
 		
 		Promise.all(components.map(async (component)=>{
-			const COMPONENT = await import(`./components/${component.get('name')}`);
+			const COMPONENT = await import(`./components/${component.get('name')}.js`);
 			return new COMPONENT.default(component.get('context')).componentWillMount();
 		})).then((resolve)=>{
 			mounted.call(this, ...resolve);

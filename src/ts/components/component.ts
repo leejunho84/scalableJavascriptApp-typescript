@@ -37,9 +37,16 @@ export default abstract class Component extends Sandbox implements IComponent{
 
 	fireEvent(type:string, target:object, params?:any[]):void{
 		let handlers = this.listeners.get(type) || new Map();
-		for(let [key, value] of handlers.entries()){
+		handlers.forEach((value, index, handlers) => {
 			value.apply(target, params);
+		});
+		
+		/*
+		for(let [key, value] of handlers.entries()){
+			//console.log(key, value);
+			//value.apply(target, params);
 		}
+		*/		
 	}
 
 	removeEvent(type:string):void{

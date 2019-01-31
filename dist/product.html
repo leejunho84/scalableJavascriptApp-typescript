@@ -147,37 +147,6 @@
 											</div>
 										</li>
 									</ul>
-									<ul id="color-swipe"></ul>								
-										<div class="pdp-gallery-fullview">
-											<div class="pdp-gallery-fullview-wrapper">
-												<div class="pdp-gallery-fullview-overlay">
-													<div class="button-wrapper">
-														<button class="pdp-gallery-fullview-close"><i class="icon-delete_thin"></i></button>
-													</div>
-													<div class="gallery-images">
-														<figure class="gallery-images-item" id="0">
-															<img alt="" src="https://static-breeze.nike.co.kr/kr/ko_kr/cmsstatic/product/10000008905/AV5554-002_AV5554-002_primary-1.jpg?zoom">
-														</figure>
-														<figure class="gallery-images-item" id="1">
-															<img alt="" src="https://static-breeze.nike.co.kr/kr/ko_kr/cmsstatic/product/10000008905/AV5554-002_AV5554-002_2.jpg?zoom">
-														</figure>
-														<figure class="gallery-images-item" id="2">
-															<img alt="" src="https://static-breeze.nike.co.kr/kr/ko_kr/cmsstatic/product/10000008905/AV5554-002_AV5554-002_3.jpg?zoom">
-														</figure>
-														<figure class="gallery-images-item" id="3">
-															<img alt="" src="https://static-breeze.nike.co.kr/kr/ko_kr/cmsstatic/product/10000008905/AV5554-002_AV5554-002_4.jpg?zoom">
-														</figure>
-														<figure class="gallery-images-item" id="4">
-															<img alt="" src="https://static-breeze.nike.co.kr/kr/ko_kr/cmsstatic/product/10000008905/AV5554-002_AV5554-002_5.jpg?zoom">
-														</figure>
-														<figure class="gallery-images-item" id="5">
-															<img alt="" src="https://static-breeze.nike.co.kr/kr/ko_kr/cmsstatic/product/10000008905/AV5554-002_AV5554-002_6.jpg?zoom">
-														</figure>
-													</div>
-												</div>
-											</div>
-										</div>
-									</ul>
 								</div>
 							</div>
 							<div class="info-wrap_product_n uk-width-medium-1-1 uk-width-large-2-5" data-component-product-options="{first:SIZE,productType:single,selectOptAppendType:false, componentType:component_radio}" data-product-id="10000008905" data-product-options="[ {
@@ -456,6 +425,21 @@
 															<option value="10" disabled="disabled">10+</option>
 														</select>
 													</div>
+													<div class="select-box" data-component-selectbox="{'changeType':'submit', 'icon':'icon-arrow_bottom'}">
+														<select name="quantity">
+															<option value="">선택해주세요</option>
+															<option value="1">1</option>
+															<option value="2">2</option>
+															<option value="3" selected="selected">3</option>
+															<option value="4">4</option>
+															<option value="5">5</option>
+															<option value="6">6</option>
+															<option value="7">7</option>
+															<option value="8">8</option>
+															<option value="9">9</option>
+															<option value="10" disabled="disabled">10+</option>
+														</select>
+													</div>
 												</div>
 											</div>
 											<div class="store-shipping-state">
@@ -613,6 +597,10 @@
 			</div>
 		</div>
 	</footer>
-	<script type="text/javascript" src="main.index.js"></script>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.0.0/system.js"></script>
+	<script type="text/javascript">
+		System.import('/js/index.js');
+	</script>
 </body>
 </html>

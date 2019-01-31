@@ -20,6 +20,7 @@ export default class Radio extends Component {
 			if($this.prop('checked')){
 				$this.parent().addClass('checked').siblings().removeClass('checked');
 				$this.siblings().attr('checked');
+
 				this.fireEvent('change', e.currentTarget, [e.currentTarget.getAttribute('value')]);
 			}
 		});
@@ -36,7 +37,5 @@ export default class Radio extends Component {
 		});
 	}
 
-	componentWillUnmount():void{
-		
-	}
+	componentWillUnmount():void{}
 }

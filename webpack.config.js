@@ -1,10 +1,24 @@
 const path = require('path');
 const webpack = require('webpack');
+const glob = require('glob');
 //const manifestPlugin = require('webpack-manifest-plugin');
+
+function toObject(paths){
+	var ret = {};
+
+	paths.forEach(function(path) {
+		//you can define entry names mapped to [name] here
+		if(!/interface/.test(path)){
+			ret[path.split('/ts').slice(-1)[0].replace(/(?:^\/|\.ts)/g, '')] = path;
+		}
+	});
+	return ret;
+}
+
 
 module.exports = {
 	mode:'development',
-	entry:path.join(__dirname, 'src/ts/index.ts'),
+	entry:toObject(glob.sync(path.join(__dirname, 'src/ts/**/*.ts'))),
 	devtool:'source-map', // Enable sourcemaps for debugging webpack's output.
 	module:{
 		rules:[
@@ -29,9 +43,8 @@ module.exports = {
 		}
 	},
 	output:{
-		filename:'[name].index.js',
-		chunkFilename:'[name].[chunkhash].chunk.js',
-		path:path.resolve(__dirname, 'dist')
+		filename:'[name].js',
+		path:path.resolve(__dirname, 'dist/js')
 	},
 	devServer:{
 		contentBase:path.join(__dirname, 'dist'),
