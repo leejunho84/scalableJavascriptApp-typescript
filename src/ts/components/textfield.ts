@@ -2,7 +2,7 @@
 import Component from './component';
 
 export default class Text extends Component {
-	private currentValue:string|number|undefined;
+	private currentValue:string|string[]|number|undefined;
 	private $input:any;
 
 	constructor(context:Element){
@@ -13,36 +13,44 @@ export default class Text extends Component {
 		this.attrName = 'data-component-textField';
 	}
 
-	componentDidMount():void{
-		let $this = this.$(this.target);
-		let $deleteBtn = $this.find('.deleteBtn');
-		let $input = $this.find('input[type=text]');
+	componentDidMount(...components:any[]):void{
+		const _this = this;
+		const $this = this.$(this.target);
+		const $deleteBtn = $this.find('.deleteBtn');
+		const $input = $this.find('input[type=text]');
 		this.$input = $input;
 
 		$input.on('focusin', (e) => {
 			e.preventDefault();
 			
-			this.currentValue = this.$input.val();
+			this.currentValue = $input.val();
 			this.fireEvent('inputFocusIn', e.currentTarget, [this.currentValue]);
 		});
 
 		$input.on('focusout', (e) => {
 			e.preventDefault();
 			
-			this.currentValue = this.$input.val();
+			this.currentValue = $input.val();
 			this.fireEvent('inputFocusOut', e.currentTarget, [this.currentValue]);
 		});
 
 		$input.on('change', (e) => {
 			e.preventDefault();
 			
-			this.currentValue = this.$input.val();
+			this.currentValue = $input.val();
 			this.fireEvent('change', e.currentTarget, [this.currentValue]);
 		});
 
 		$deleteBtn.on('click', (e) => {
 			e.preventDefault();
-			this.$input.val('');
+			$input.val('');
+		});
+
+		//input의 버튼 컴포넌트
+		components.map((component)=>{
+			component.addEvent('clicked', function(this:HTMLElement, ...args:any[]){
+				_this.fireEvent('searching', $input[0], [$input.val()]);
+			});
 		});
 	}
 
@@ -52,10 +60,10 @@ export default class Text extends Component {
 		this.$input = undefined;
 	}
 
-	get value():string|number|undefined{
+	get value():string|string[]|number|undefined{
 		return this.currentValue;
 	}
-	set value(val:string|number|undefined){
+	set value(val:string|string[]|number|undefined){
 		this.$input.val(val);
 	}
 }

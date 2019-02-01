@@ -1,32 +1,23 @@
 import Module from './module';
-import Text from '../components/textfield';
-import Button from '../components/button';
 import Vue from 'vue';
 import SearchResultComponent from './partials/postCodeList';
 
 export default class PostCodeSearch extends Module{
-	constructor(selector:string){
-		super(selector, 'data-module-postcodesearch');
+	constructor(){
+		super('[data-module-postcode-search]', 'data-module-postcode-search');
+		this.componentsInitalize(this.context, this.moduleWillMount);
+	}
 
-		let _self = this;
-		let textComponent = new Text(this.context);
-		let buttonComponent = new Button(this.context);
-
-		buttonComponent.addEvent('buttonClick', function(this:HTMLElement, ...args:any[]){
-			let opts = {
-				url:_self.attributes.api,
-				data:{
-					q:textComponent.value
-				}
-			};
-
-			/*
-			_self.promise(opts).then(function(params:any){
-				let data:any = _self.strToJson(params, true);
-				vueComponent['items'] = data.results;
-			}).catch(function(err:any){
-				console.log(err);
-			});*/
+	moduleWillMount(...components:any[]):void{
+		let _this = this;
+		components.map((component)=>{
+            component.addEvent('searching', function(this:HTMLElement, ...args:any[]){
+				if(args[0] === '') return;
+				_this.ajax(_this.attributes.api, 'GET', {q:args[0]}, (data:any)=>{
+					const result:any = _this.rtnJson(data);
+					vueComponent['items'] = result.results;
+				});
+			});
 		});
 
 		const vueComponent = new Vue({
@@ -47,7 +38,5 @@ export default class PostCodeSearch extends Module{
 			}
 		});
 	}
-
-	moduleWillMount():void{}
 	moduleWillUnmount():void{}
 }

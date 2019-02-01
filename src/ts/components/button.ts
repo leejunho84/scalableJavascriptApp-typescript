@@ -2,6 +2,7 @@
 import Component from './component';
 
 export default class Button extends Component{
+	private $this:any;
 	constructor(context:Element){
 		super(context);
 
@@ -10,24 +11,24 @@ export default class Button extends Component{
 	}
 
 	componentDidMount():void{
-		let $this = this.$(this.target);
-		$this.on({
-			mouseEnter:(e) => {
+		this.$this = this.$(this.target);
+		this.$this.on({
+			mouseenter:(e) => {
 				e.preventDefault();
-				this.fireEvent('mouseEnter', e.target);
+				this.fireEvent('mouseOver', e.target);
 			},
-			mouseLeave:(e) => {
+			mouseleave:(e) => {
 				e.preventDefault();
-				this.fireEvent('mouseLeave', e.target);
+				this.fireEvent('mouseOut', e.target);
 			},
 			click:(e) => {
 				e.preventDefault();
-				this.fireEvent('click', e.target);
+				this.fireEvent('clicked', e.target);
 			}
 		});
 	}
 
 	componentWillUnmount():void{
-		
+		this.$this.off();
 	}
 }

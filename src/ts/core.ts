@@ -9,17 +9,18 @@ export default class Core implements ICore{
 
 		for(let i=0; i<ID.length; i++){
 			let name = ID[i].replace(/data-/g, '').replace(/-/g, '_');
-			let type = name.replace(/\_\w*/g, '');
-			let importName = name.replace(type, '').replace(/_/, '');
-			modules.push(importName);
+			modules.push(ID[i].split('module-').slice(-1)[0].replace(/(-\w{1})/g, ($1:string):string=>{
+				return $1.replace('-', '').toUpperCase();
+			}));
 		}
 
 		Promise.all(modules.map(async (name:string)=>{
 			const MODULE = await import(`./modules/${name}.js`)
 			return MODULE;
 		})).then((resolve)=>{
-			resolve.map((module)=>{
-				new module.default();
+			resolve.map((Module)=>{
+				const module = new Module.default();
+				this.sessionModules(module.selector, module);
 			});
 		}).catch((err)=>{
 			console.log(err);
@@ -112,5 +113,17 @@ export default class Core implements ICore{
 			}
 			return prev;
 		}, resultArray);
+	}
+
+	//모듈간 통신을 위해 session에서 모듈의 집합 및 상태를 관할하는 부분이 필요하여
+	//sessionStorage를 사용하여 모듈을 등록하고 참조할수있게 Core에 method를 추가함
+	//sessionStorage를 어떠한 타입으로 정의해야하는지 찾아봐야함 임시로 any타입으로 정의
+	//sessionStorage는 value 타입이 string 으로 안됨 
+	sessionModules(key:string, value?:any){
+		if(value !== undefined){
+			window.sessionStorage.setItem(key, value);			
+		}else{
+			return window.sessionStorage.getItem(key);
+		}
 	}
 }

@@ -5,4 +5,6 @@ export default interface ICore {
 	findContextName(context:Element):string
 	strToJson(str:string, noteval?:boolean):object
 	arraySameRemove<T>(array:T[]):T[]
+	sessionModules(key:string, value?:any):void
+	sessionModules(key:string):any
 }

@@ -7,6 +7,7 @@ export default class Product extends Module {
     }
 
     moduleWillMount(...components:any[]):void{
+        console.log(this);
         console.log('module_product:', components);
     }
 	moduleWillUnmount():void{}

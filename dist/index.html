@@ -13,19 +13,24 @@
 			<a href="/search.html">search</a>
 			<a href="/product.html">product</a>
 		</div>
-		<div data-module-postcodesearch="{api://api.poesis.kr/post/search.php}">
-			<div data-component-textField="{regex:[0-9]}">
-				<form action="/" method="POST" type="">
-					<fieldset>
-						<legend>inputText Component</legend>
-						<input type="text" id="search" name="search" placeholder="search" value="" />						
-						<button data-component-button="">확인</button>
-					</fieldset>
-				</form>
+		<div data-module-global="">
+			<div data-module-postcode-search="{api://api.poesis.kr/post/search.php}">
+				<div data-component-textField="{regex:[0-9]}">
+					<form action="/" method="POST" type="">
+						<fieldset>
+							<legend>inputText Component</legend>
+							<input type="text" id="search" name="search" placeholder="search" value="" />						
+							<button data-component-button="">확인</button>
+						</fieldset>
+					</form>
+				</div>
+				<div id="postcode-result"></div>
 			</div>
-			<div id="postcode-result"></div>
 		</div>
 	</section>
-	<script type="text/javascript" src="main.index.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.0.0/system.js"></script>
+	<script type="text/javascript">
+		System.import('/js/index.js');
+	</script>
 </body>
 </html>

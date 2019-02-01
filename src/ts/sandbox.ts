@@ -37,4 +37,15 @@ export default class Sandbox extends Core{
 			}
 		}
 	}
+	
+	ajax(url:string, method:string, data:object, success:Function):void{
+		this.$.ajax({
+			url:url,
+			method:method,
+			data:data,
+			success:(data:any) => {
+				success(data);
+			}
+		});
+	}
 }
