@@ -1,14 +1,13 @@
 import Module from './module';
 
 export default class Product extends Module {
-    constructor(){
-        super('[data-module-product]', 'data-module-product');
-        this.componentsInitalize(this.context, this.moduleWillMount);
-    }
+	constructor(){
+		super('[data-module-product]', 'data-module-product');
+	}
 
-    moduleWillMount(...components:any[]):void{
-        console.log(this);
-        console.log('module_product:', components);
-    }
+	moduleWillMount(...components:any[]):void{
+		console.log(this);
+		console.log('module_product:', components);
+	}
 	moduleWillUnmount():void{}
 }

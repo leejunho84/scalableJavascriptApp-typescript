@@ -24,8 +24,8 @@ export default abstract class Component extends Sandbox implements IComponent{
 
 	componentWillMount():this{
 		this.target = this.context; //this.context.querySelector(this.selector);
-		this.attributes = this.rtnToAttributes(this.target, this.attrName);
-		this.componentsInitalize(this.target, this.componentDidMount);
+		this.attributes = this.rtnToAttributes(this.context, this.attrName);
+		this.componentsInitalize(this.context, this.componentDidMount);
 		return this;
 	}
 

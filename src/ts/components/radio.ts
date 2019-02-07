@@ -12,7 +12,7 @@ export default class Radio extends Component {
 	componentDidMount():void{
 		let $this = this.$(this.target);
 		let $radio = $this.find('input[type=radio]');
-		
+
 		$radio.off('change').on('change', (e) => {
 			let element = e.currentTarget;
 			let $this = this.$(e.currentTarget);

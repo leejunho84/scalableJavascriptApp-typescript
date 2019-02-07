@@ -5,7 +5,6 @@ import SearchResultComponent from './partials/postCodeList';
 export default class PostCodeSearch extends Module{
 	constructor(){
 		super('[data-module-postcode-search]', 'data-module-postcode-search');
-		this.componentsInitalize(this.context, this.moduleWillMount);
 	}
 
 	moduleWillMount(...components:any[]):void{

@@ -35,7 +35,7 @@ export default class Quantity extends Component {
 			}
 
 			this.currentQty = this.quantityByCheckLimit(quantity);
-			this.fireEvent('changeQuantity', this, [this.currentQty]);
+			this.fireEvent('changeQuantity', e.currentTarget, [this.currentQty]);
 			components[0].value = this.currentQty;
 		});
 	}

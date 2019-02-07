@@ -33,7 +33,7 @@ export default class SelectBox extends Component {
 		});
 
 		const vueSelectComponent = new Vue({
-			el:this.target,
+			el:this.context,
 			data:{
 				opened:false,
 				currentIndex:currentIndex,
@@ -74,8 +74,6 @@ export default class SelectBox extends Component {
 				}
 			}
 		});
-		
-		
 	}
 	componentWillUnmount():void{}
 }

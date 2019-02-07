@@ -10,6 +10,7 @@ export default abstract class Module extends Sandbox implements IModule {
 
 		this.context = document.querySelector(selector);
 		this.attributes = this.rtnToAttributes(this.context, attrName);
+		this.componentsInitalize(this.context, this.moduleWillMount);
 	}
 
 	abstract moduleWillMount(components:any[]):void;

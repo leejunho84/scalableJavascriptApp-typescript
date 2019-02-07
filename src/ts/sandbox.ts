@@ -1,28 +1,28 @@
 import Core from './core';
 import JQuery from 'jQuery';
 
-export default class Sandbox extends Core{
-	$:JQueryStatic;
-
+export default class Sandbox {
+	private core:Core;
+	public $:JQueryStatic;
+	
 	constructor(){
-		super();
-
+		this.core = new Core();
 		this.$ = JQuery;
 	}
 
-	rtnJson(data:string, noteval:boolean=true):object{
-		return this.strToJson(data, noteval);
+	public rtnJson(data:string, noteval:boolean=true):object{
+		return this.core.strToJson(data, noteval);
 	}
 
-	moduleInitalize(strHtml:string, defer?:object):void{
-		this.moduleEventInjection(strHtml, defer);
+	public moduleInitalize(strHtml:string):void{
+		this.core.moduleEventInjection(strHtml);
 	}
 
-	componentsInitalize(context:Element, mountFunc:any):void{
-		this.componentEventInjection(context, mountFunc);
+	public componentsInitalize(context:Element, mountFunc:any):void{
+		this.core.componentEventInjection(this, context, mountFunc);
 	}
 
-	rtnToAttributes(_self:any, attrName:any):any{
+	public rtnToAttributes(_self:any, attrName:string|string[]):any{
 		if(_self){
 			if(attrName instanceof Array){
 				//multiple attribute
@@ -38,7 +38,7 @@ export default class Sandbox extends Core{
 		}
 	}
 	
-	ajax(url:string, method:string, data:object, success:Function):void{
+	public ajax(url:string, method:string, data:object, success:Function):void{
 		this.$.ajax({
 			url:url,
 			method:method,
@@ -47,5 +47,15 @@ export default class Sandbox extends Core{
 				success(data);
 			}
 		});
+	}
+
+	public mountedModule():void;
+	public mountedModule(key:string):any;
+	public mountedModule(key?:string):any{
+		if(typeof key === 'string'){
+			return Core.mountedModules.get(key);
+		}else{
+			return Core.mountedModules;
+		}
 	}
 }
