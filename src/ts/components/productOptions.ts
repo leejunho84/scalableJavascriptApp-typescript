@@ -8,7 +8,7 @@ export default class ProductOption extends Component {
     }
 
     componentDidMount(...components:any[]):void{
-        //console.log('component_productOption:', components);
+        //console.log('component_productOption:', components);        
         components.map((component)=>{
             component.addEvent('change', function(this:HTMLElement, ...args:any){
 				console.log(args);

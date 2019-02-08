@@ -1,9 +1,9 @@
 import Sandbox from '../sandbox';
 import IModule from '../interface/imodule';
 
-export default abstract class Module extends Sandbox implements IModule {
-	context:any;
-	attributes:any;
+export default abstract class Module extends Sandbox {
+	protected context:any;
+	protected attributes:any;
 
 	constructor(selector:string, attrName:string|string[]){
 		super();
@@ -13,6 +13,6 @@ export default abstract class Module extends Sandbox implements IModule {
 		this.componentsInitalize(this.context, this.moduleWillMount);
 	}
 
-	abstract moduleWillMount(components:any[]):void;
-	abstract moduleWillUnmount():void;
+	public abstract moduleWillMount(components:any[]):void;
+	public abstract moduleWillUnmount():void;
 }

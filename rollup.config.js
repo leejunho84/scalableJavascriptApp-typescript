@@ -7,13 +7,14 @@ import replace from 'rollup-plugin-replace';
 import livereload from 'rollup-plugin-livereload';
 import alias from 'rollup-plugin-alias';
 
+/*
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
 import resolveAlias from 'rollup-plugin-resolve-alias';
 import buble from 'rollup-plugin-buble'
 import VuePlugin from 'rollup-plugin-vue';
 import babel from 'rollup-plugin-babel';
-
+*/
 
 
 function toObject(paths){
@@ -30,10 +31,7 @@ function toObject(paths){
 export default {
 	input:toObject(glob.sync(path.join(__dirname, 'src/ts/**/*.ts'))),
 	plugins:[
-		typescript({
-			lib:['es6', 'es7'],
-			target:'es5'
-		}),
+		typescript(),
 		replace({
 			'process.env.NODE_ENV':JSON.stringify('production')
 		}),
@@ -41,8 +39,10 @@ export default {
 			'vue':path.resolve('node_modules/vue/dist/vue.js')
 		}),
 		resolve({
-			jsnext:true,
-      		main:true
+			// pass custom options to the resolve plugin
+			customResolveOptions: {
+				moduleDirectory:'node_modules'
+			}
 		}),
 		commonjs({
 			include: 'node_modules/**',
@@ -55,7 +55,8 @@ export default {
 		{
 			dir:"dist/js",
 			format:"system",
-			sourcemap:false
+			sourcemap:false,
+			chunkFileNames:'[name].js'
 		}
 	]
 };

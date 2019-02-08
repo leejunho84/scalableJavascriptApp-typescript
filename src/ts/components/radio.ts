@@ -10,12 +10,12 @@ export default class Radio extends Component {
 	}
 
 	componentDidMount():void{
-		let $this = this.$(this.target);
+		let $this = $(this.target);
 		let $radio = $this.find('input[type=radio]');
 
 		$radio.off('change').on('change', (e) => {
 			let element = e.currentTarget;
-			let $this = this.$(e.currentTarget);
+			let $this = $(e.currentTarget);
 			
 			if($this.prop('checked')){
 				$this.parent().addClass('checked').siblings().removeClass('checked');
@@ -27,7 +27,7 @@ export default class Radio extends Component {
 		
 		//기본 선택값 처리
 		$radio.each((index, currentTarget) => {
-			let $this = this.$(currentTarget);
+			let $this = $(currentTarget);
 			if(currentTarget.getAttribute('checked') === 'checked'){
 				setTimeout(() => {
 					$this.trigger('change');

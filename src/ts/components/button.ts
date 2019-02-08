@@ -11,17 +11,17 @@ export default class Button extends Component{
 	}
 
 	componentDidMount():void{
-		this.$this = this.$(this.target);
+		this.$this = $(this.target);
 		this.$this.on({
-			mouseenter:(e) => {
+			mouseenter:(e:Event) => {
 				e.preventDefault();
 				this.fireEvent('mouseOver', e.target);
 			},
-			mouseleave:(e) => {
+			mouseleave:(e:Event) => {
 				e.preventDefault();
 				this.fireEvent('mouseOut', e.target);
 			},
-			click:(e) => {
+			click:(e:Event) => {
 				e.preventDefault();
 				this.fireEvent('clicked', e.target);
 			}

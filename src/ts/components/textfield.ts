@@ -15,7 +15,7 @@ export default class Text extends Component {
 
 	componentDidMount(...components:any[]):void{
 		const _this = this;
-		const $this = this.$(this.target);
+		const $this = $(this.target);
 		const $deleteBtn = $this.find('.deleteBtn');
 		const $input = $this.find('input[type=text]');
 		this.$input = $input;

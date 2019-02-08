@@ -22,10 +22,10 @@ export default class Quantity extends Component {
 		this.minQty = (this.attributes.minQuantity) ? +this.attributes.minQuantity : 1;
 		this.maxQty = (this.attributes.maxQuantity) ? +this.attributes.maxQuantity : 100;
 
-		this.$(this.target).find('.btn').on('click', (e)=>{
+		$(this.target).find('.btn').on('click', (e)=>{
 			e.preventDefault();
 
-			let $this = this.$(e.currentTarget);
+			let $this = $(e.currentTarget);
 			let quantity = this.currentQty;
 
 			if($this.hasClass('minus')){

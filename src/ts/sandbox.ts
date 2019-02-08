@@ -1,13 +1,10 @@
 import Core from './core';
-import JQuery from 'jQuery';
 
 export default class Sandbox {
 	private core:Core;
-	public $:JQueryStatic;
-	
+
 	constructor(){
 		this.core = new Core();
-		this.$ = JQuery;
 	}
 
 	public rtnJson(data:string, noteval:boolean=true):object{
@@ -38,8 +35,8 @@ export default class Sandbox {
 		}
 	}
 	
-	public ajax(url:string, method:string, data:object, success:Function):void{
-		this.$.ajax({
+	public ajax(url:string, method:string, data:object, success:Function):void{		
+		$.ajax({
 			url:url,
 			method:method,
 			data:data,

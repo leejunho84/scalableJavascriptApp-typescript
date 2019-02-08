@@ -1,12 +1,12 @@
 import Sandbox from '../sandbox';
 import IComponent from '../interface/icomponent';
 
-export default abstract class Component extends Sandbox implements IComponent{
-	context:Element
-	target:any
-	attributes:any
-	eventID:number
-	listeners:Map<string, Map<number, Function>>
+export default abstract class Component extends Sandbox {
+	protected context:Element
+	protected target:any
+	protected attributes:any
+	private eventID:number
+	private listeners:Map<string, Map<number, Function>>
 
 	selector:string
 	attrName:string|string[]
@@ -22,20 +22,20 @@ export default abstract class Component extends Sandbox implements IComponent{
 		this.attributes = {};
 	}
 
-	componentWillMount():this{
+	public componentWillMount():any{
 		this.target = this.context; //this.context.querySelector(this.selector);
 		this.attributes = this.rtnToAttributes(this.context, this.attrName);
 		this.componentsInitalize(this.context, this.componentDidMount);
 		return this;
 	}
 
-	addEvent(type:string, handler:Function):void{
+	public addEvent(type:string, handler:Function):void{
 		if(!this.listeners.has(type)) this.listeners.set(type, new Map());
 		let events = this.listeners.get(type) || new Map();
 		events.set(this.eventID, handler);
 	}
 
-	fireEvent(type:string, target:HTMLElement, params?:any[]):void{
+	public fireEvent(type:string, target:EventTarget|null, params?:any[]):void{
 		let handlers = this.listeners.get(type) || new Map();
 		handlers.forEach((value, index, handlers) => {
 			value.apply(target, params);
@@ -49,13 +49,13 @@ export default abstract class Component extends Sandbox implements IComponent{
 		*/		
 	}
 
-	removeEvent(type:string):void{
+	public removeEvent(type:string):void{
 		if(this.listeners.has(type)){
 			let handlers = this.listeners.get(type) || new Map();
 			handlers.delete(this.eventID);
 		}
 	}
 
-	abstract componentDidMount(...components:any[]):void
-	abstract componentWillUnmount():void
+	public abstract componentDidMount(...components:any[]):void
+	public abstract componentWillUnmount():void
 }
