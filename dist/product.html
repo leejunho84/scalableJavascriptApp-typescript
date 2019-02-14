@@ -5,7 +5,7 @@
 <meta content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
 <title>Bristol template</title>
-<link rel="stylesheet" href="/css/common.css">
+<link rel="stylesheet" href="/assets/css/common.css">
 </head>
 <body data-device="pc">
 	<header class="header_layout_1" data-module-header="{isSignIn:false, firstName:, phoneNumber:, emailAddress:}">
@@ -20,16 +20,14 @@
 				<ul class="uk-float-right header-mymenu">
 					<li>
 						<span>
-							<a title="회원가입" data-click-area="Upper GNB" data-click-name="join" class="join" href="/kr/ko_kr/register">회원가입</a>
-							/
-							<a data-component-loginmodal="" title="로그인" data-click-area="Upper GNB" data-click-name="login" class="login">로그인</a>
+							<a title="회원가입" class="join" href="/kr/ko_kr/register">회원가입</a> / <a title="로그인" class="login">로그인</a>
 						</span>
 					</li>
 					<li>
 						<a href="https://nike-breeze.zendesk.com/hc/ko">고객센터</a>
 					</li>
 					<li>
-						<a icon-text-attr="0" data-click-area="Upper GNB" data-click-name="Cart" data-component-cartitemlen="{itemCount:0}" href="/kr/ko_kr/cart" class="cart-item empty"><i class="ns-cart"></i> <!----></a>
+						<a data-component-cartItemLen="{itemCount:4}" href="/kr/ko_kr/cart" class="cart-item empty"><i class="ns-cart"></i></a>
 					</li>
 					<li><a href="http://www.nike.com/language_tunnel"><span class="flag-kr" title="대한민국"></span></a></li>
 				</ul>
@@ -43,13 +41,13 @@
 
 				<div class="header-menu_etc">
 					<a class="gnb-search-btn" href="#"><i class="ns-search large"></i></a>
-					<a icon-text-attr="0" data-click-area="Upper GNB" data-click-name="Cart" data-component2-cartitemlen="{itemCount:0}" href="/kr/ko_kr/cart" class="mini-cart empty"><i class="ns-cart large"></i> <!----></a>
+					<a data-component-cartitemlen="{itemCount:2}" href="/kr/ko_kr/cart" class="mini-cart empty"><i class="ns-cart large"></i></a>
 				</div>
-				<div class="gnb-search-field" search="{keywordMaxLen:10, isLatestKeyword:false}">
+				<div class="gnb-search-field" data-component-search="{keywordMaxLen:10, isLatestKeyword:false}">
 					<form method="GET" id="search-form" action="/kr/ko_kr/search">
 						<fieldset>
 							<legend>gift search</legend>
-							<div class="search-field" data-component-searchfield="{submit:#search-form}">
+							<div class="search-field">
 								<span class="input-textfield width-max">
 									<input type="search" id="search" class="jq_search ui-autocomplete-input" name="q" placeholder="검색" autocomplete="off" value="">
 									<span class="search_icon mobile-only"><i class="ns-search"></i></span>
@@ -60,7 +58,7 @@
 								<button class="btn_search width-fix btn-search-mobile"><span class="text">검색</span><i class="ns-search"></i></button>
 								<div class="btn-search-close mobile-only">취소</div>
 									<div class="etc-search-wrap">
-										<div id="keyword-count" style="display: none;">
+										<div id="keyword-count" style="display:none;">
 											<h4 class="tit">최근 검색어</h4>
 											<div id="keyword-container" class="uk-switcher">
 												<ul id="latest-keyword" class="search-wrap latest-search">
@@ -598,8 +596,15 @@
 		</div>
 	</footer>
 
-	<script type="text/javascript" src="/libs/jquery.min.js"></script>
-	<script type="text/javascript" src="/libs/uikit.min.js"></script>
+	<article id="common-modal" class="uk-modal">
+		<div class="uk-modal-dialog">
+			<a class="uk-modal-close uk-close"></a>
+			<div class="contents"></div>
+		</div>
+	</article>
+
+	<script type="text/javascript" src="/assets/libs/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/libs/uikit.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.0.0/system.js"></script>
 	<script type="text/javascript">
 		System.import('/js/index.js');

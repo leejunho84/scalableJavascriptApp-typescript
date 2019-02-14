@@ -10,6 +10,7 @@ export default abstract class Module extends Sandbox {
 
 		this.context = document.querySelector(selector);
 		this.attributes = this.rtnToAttributes(this.context, attrName);
+		console.log(this.context);
 		this.componentsInitalize(this.context, this.moduleWillMount);
 	}
 

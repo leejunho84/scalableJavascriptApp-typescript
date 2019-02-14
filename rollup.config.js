@@ -6,6 +6,8 @@ import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import livereload from 'rollup-plugin-livereload';
 import alias from 'rollup-plugin-alias';
+import { uglify } from 'rollup-plugin-uglify';
+import { terser } from 'rollup-plugin-terser';
 
 /*
 import builtins from 'rollup-plugin-node-builtins';
@@ -33,7 +35,8 @@ export default {
 	plugins:[
 		typescript(),
 		replace({
-			'process.env.NODE_ENV':JSON.stringify('production')
+			'process.env.NODE_ENV':JSON.stringify('prod'),
+			'./':'/kr/ko_kr/'
 		}),
 		alias({
 			'vue':path.resolve('node_modules/vue/dist/vue.js')
@@ -48,12 +51,12 @@ export default {
 			include: 'node_modules/**',
 			sourceMap: false
 		}),
-		(process.env.NODE_ENV !== 'production' && livereload('dist')),
-		(process.env.NODE_ENV === 'production' && uglify()),
+		//(process.env.NODE_ENV === 'dev' && livereload('dist')),
+		(process.env.NODE_ENV === 'prod' && uglify())
 	],
 	output: [
 		{
-			dir:"dist/js",
+			dir:"dist/assets/js",
 			format:"system",
 			sourcemap:false,
 			chunkFileNames:'[name].js'
