@@ -1,7 +1,7 @@
-//import ICore from './interface/icore';
+import IModule from "./modules/interface/imodule";
 
 export default class Core {
-	static mountedModules:Map<string, any>;
+	static mountedModules:Map<string, IModule>;
 	
 	constructor(){
 		if(Core.mountedModules === undefined){
@@ -29,7 +29,7 @@ export default class Core {
 		return IDs[0];
 	}
 
-	public moduleEventInjection(strHtml:string):void{
+	public async moduleEventInjection(strHtml:string, defer?:()=>{}):Promise<Map<string, any>>{
 		let ID = strHtml.match(/data-(?:module)-(?:\w|-)+/g) || [];
 		let moduleNames:string[] = [];
 
@@ -40,21 +40,26 @@ export default class Core {
 			}));
 		}
 
-		Promise.all(moduleNames.map(async (name:string)=>{
-			const MODULE = await import(`./modules/${name}.js`);
-			return MODULE;
-		})).then((resolve)=>{
-			resolve.map((Module, index)=>{
+		try {
+			const resolve = await Promise.all(moduleNames.map(async (name_1: string) => {
+				const MODULE = await import(`./modules/${name_1}.js`);
+				return MODULE;
+			}));
+
+			const loadCompleteModule:Map<string, any> = new Map();
+			resolve.map((Module, index) => {
 				const module = new Module.default();
 				Core.mountedModules.set(moduleNames[index], module);
+				loadCompleteModule.set(moduleNames[index], module);
 			});
-			return resolve;
-		}).catch((err)=>{
-			console.log(err);
-		});
+			return loadCompleteModule;
+		}
+		catch (err) {
+			throw new Error(err);
+		}
 	}
 
-	public componentEventInjection(target:any, context:Element, mounted:(...components:any[])=>{}):void{
+	public componentEventInjection(target:any, context:Element, mounted:Function):void{
 		const contextId:string = this.findContextName(context);
 		const strHtml:string = context.innerHTML;
 		const IDs:string[] = this.arraySameRemove<string>(strHtml.match(/data-(?:component)-(?:\w|-)+/g) || []);
@@ -84,27 +89,21 @@ export default class Core {
 		})).then((resolve)=>{
 			mounted.call(target, ...resolve);
 		}).catch((err)=>{
-			console.log(err);
+			throw new Error(err);
 		});
 	}
 
-	public strToJson(str:string, noteval:boolean):object{
+	public strToJson(str:string, noteval:boolean=true):any{
 		try{
 			// json 데이터에 "가 있을경우 변환할필요가 없으므로 notevil을 false로 변경
 			if(str.match(/"/g) !== null) noteval = false;
-			if(noteval) {
+			if(noteval){
 				return JSON.parse(str
-					// wrap keys without quote with valid double quote
-					.replace(/([\$\w]+)\s*:+([`'~!@#$%^&*?();:|_+=\/\w-#().\s0-9가-힣/\[/\]]*)/g, function(_, $1, $2){
-						if($2 !== ''){
-							return '"'+$1+'":"'+$2+'"';
-						}else{
-							return '"'+$1+'":""';
-						}
-					})
-					//replacing single quote wrapped ones to double quote
-					.replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"';}));
-			} else {
+					.replace(/([\w]+)\s?(?=:)|(?<=:)([^{,}]|{[\w\s=,]+})+/g, function($1){
+						return '"' + $1 + '"';
+					}));
+					//.replace(/'([^']+)'/g, function($1){return '"'+$1+'"';}));
+			}else{
 				return (new Function("", "var json = " + str + "; return JSON.parse(JSON.stringify(json));"))();
 			}
 		}catch(e){
@@ -120,5 +119,78 @@ export default class Core {
 			}
 			return prev;
 		}, resultArray);
+	}
+
+	public serialize(context:HTMLFormElement|Element|null):string{
+		let serializes:string[] = [];
+		if(context !== null){
+			const inputElement:NodeListOf<HTMLInputElement> = context.querySelectorAll('input');
+			inputElement.forEach((input, index, inputs)=>{
+				const key = input.getAttribute('name');
+				const value = input.value;
+				const disable = input.getAttribute('disabled');
+				const type = input.getAttribute('type');
+				if(!disable){
+					if(type === 'checkbox'){
+						serializes.push(`${key}=${input.checked}`);
+					}else{
+						serializes.push(`${key}=${value}`);
+					}
+				}
+			});
+		}else{
+			throw new Error('Element is null');
+		}
+
+		return serializes.join('&');
+	}
+
+	public mapQueryParams(str:string):Map<string, string|string[]>{
+		let result:Map<string, string|string[]> = new Map();
+		str.replace(/([^?=&]+)(?:=([^&]*))/g, (pattern, key, value):string=>{
+			if(result instanceof Map){
+				if(result.has(key)){
+					let currentValue = result.get(key);
+					if(currentValue){
+						if(currentValue instanceof Array){
+							currentValue.push(value);
+						}else{
+							result.set(key, [currentValue, value]);
+						}
+					}
+				}else{
+					result.set(key, value);
+				}
+			}
+			return pattern;
+		});
+
+		return result;
+	}
+
+	public arrayQueryParams(str:string):string[]{
+		let result:string[] = [];
+		str.replace(/([^?=&]+)(?:=([^&]*))/g, (pattern, key, value):string=>{
+			result.push(pattern);
+			return pattern;
+		});
+
+		return result;
+	}
+
+	public setCookie(name:string, value:string, exp?:number):void{
+		const date = new Date();
+		const expires = exp ? exp : 0;
+		date.setTime(date.getTime() + expires*24*60*60*1000);
+		document.cookie = `${name}=${value};${(expires > 0) ? ('expires=' + date.toUTCString()) : ''}`;
+	}
+
+	public getCookie(name:string):string|null{
+		var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+		return value ? value[2] : null;
+	}
+
+	public removeCookie(name:string):void{
+		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 	}
 }

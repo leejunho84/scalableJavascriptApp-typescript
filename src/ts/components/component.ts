@@ -1,17 +1,14 @@
 import Sandbox from '../sandbox';
-import IComponent from '../interface/icomponent';
 
 export default abstract class Component extends Sandbox {
-	protected context:Element
-	protected target:any
-	protected attributes:any
-	private eventID:number
-	private listeners:Map<string, Map<number, Function>>
+	public context:HTMLElement;
+	public target:any;
+	public selector:string;
+	public attrName:string|string[];
+	private eventID:number;
+	private listeners:Map<string, Map<number, Function>>;
 
-	selector:string
-	attrName:string|string[]
-
-	constructor(context:Element){
+	constructor(context:HTMLElement){
 		super();
 
 		this.context = context;
@@ -19,12 +16,10 @@ export default abstract class Component extends Sandbox {
 		this.attrName = '';
 		this.eventID = 0;
 		this.listeners = new Map();
-		this.attributes = {};
 	}
 
 	public componentWillMount():any{
 		this.target = this.context; //this.context.querySelector(this.selector);
-		this.attributes = this.rtnToAttributes(this.context, this.attrName);
 		this.componentsInitalize(this.context, this.componentDidMount);
 		return this;
 	}
@@ -35,10 +30,10 @@ export default abstract class Component extends Sandbox {
 		events.set(this.eventID, handler);
 	}
 
-	public fireEvent(type:string, target:EventTarget|null, params?:any[]):void{
+	public fireEvent(type:string, target:EventTarget|null, params?:any):void{
 		let handlers = this.listeners.get(type) || new Map();
 		handlers.forEach((value, index, handlers) => {
-			value.apply(target, params);
+			value.call(target, params);
 		});
 		
 		/*
@@ -46,7 +41,7 @@ export default abstract class Component extends Sandbox {
 			//console.log(key, value);
 			//value.apply(target, params);
 		}
-		*/		
+		*/
 	}
 
 	public removeEvent(type:string):void{
@@ -56,6 +51,6 @@ export default abstract class Component extends Sandbox {
 		}
 	}
 
-	public abstract componentDidMount(...components:any[]):void
+	public abstract componentDidMount():void
 	public abstract componentWillUnmount():void
 }

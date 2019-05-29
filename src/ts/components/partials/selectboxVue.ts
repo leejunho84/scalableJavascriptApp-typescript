@@ -2,8 +2,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component({
 	template: `
-		<div class="select-box pc"
-			v-on:mouseleave="mouseLeave"
+		<div v-on:mouseleave="mouseLeave"
 			v-bind:class="{checked:opened}">
 			<a class="select-head" ref="header" v-on:click="mouseEnter">
 				<span class="currentOpt">{{currentLabel}}</span>
@@ -54,19 +53,19 @@ export default class selectBoxVue extends Vue{
 		body.scrollTo({top:options[this.currentIndex].offsetTop});
 	}
 	
-	mouseEnter(e:MouseEvent):void{
+	mouseEnter(e:Event):void{
 		e.preventDefault();
 		//셀렉트 해더 클릭시 상위컴포넌트 메소드에 이벤트 전달
 		this.$emit('optionEnter', e.currentTarget);
 	}
 
-	mouseLeave(e:MouseEvent):void{
+	mouseLeave(e:Event):void{
 		e.preventDefault();
 		//셀렉트에서 마우스 out시 상위컴포너느 메소드에 이벤트 전달
 		this.$emit('optionLeave', e.currentTarget);
 	}
 
-	optionSelect(e:MouseEvent):void{
+	optionSelect(e:Event):void{
 		e.preventDefault();
 		//옵션선택시 상위 컴포넌트 메소드에 이벤트 전달
 		this.$emit('optionSelected', e.currentTarget);

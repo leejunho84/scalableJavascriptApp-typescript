@@ -1,7 +1,7 @@
 import Quantity from "./quantity";
 
 export default class QuantitySelect extends Quantity {
-	constructor(context:Element){
+	constructor(context:HTMLElement){
 		super(context);
 
 		this.selector = '[data-component-quantity-selectbox]';

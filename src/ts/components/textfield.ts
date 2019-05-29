@@ -1,69 +1,100 @@
 //textField Component
 import Component from './component';
+import { ITextFieldAttributes } from './interface/ITextField';
 
 export default class Text extends Component {
-	private currentValue:string|string[]|number|undefined;
-	private $input:any;
+	private _input?:HTMLInputElement|null;
+	private _error?:Element|null;
+	private _pattern!:RegExp;
+	public attributes:ITextFieldAttributes;
 
-	constructor(context:Element){
+	constructor(context:HTMLElement){
 		super(context);
-		
-		this.currentValue = '';
-		this.selector = '[data-component-textField]';
-		this.attrName = 'data-component-textField';
+
+		this.selector = '[data-component-textfield]';
+		this.attrName = 'data-component-textfield';
+		this.attributes = this.rtnToAttributes(this.context, this.attrName);
 	}
 
-	componentDidMount(...components:any[]):void{
+	public componentDidMount(...components:any[]):void{
 		const _this = this;
-		const $this = $(this.target);
-		const $deleteBtn = $this.find('.deleteBtn');
-		const $input = $this.find('input[type=text]');
-		this.$input = $input;
+		this._input = this.context.querySelector<HTMLInputElement>('input[type=text]');
+		this._error = this.context.querySelector('.server-error-message');
+		this._pattern = new RegExp(this.attributes.regex);
 
-		$input.on('focusin', (e) => {
-			e.preventDefault();
-			
-			this.currentValue = $input.val();
-			this.fireEvent('inputFocusIn', e.currentTarget, [this.currentValue]);
-		});
-
-		$input.on('focusout', (e) => {
-			e.preventDefault();
-			
-			this.currentValue = $input.val();
-			this.fireEvent('inputFocusOut', e.currentTarget, [this.currentValue]);
-		});
-
-		$input.on('change', (e) => {
-			e.preventDefault();
-			
-			this.currentValue = $input.val();
-			this.fireEvent('change', e.currentTarget, [this.currentValue]);
-		});
-
-		$deleteBtn.on('click', (e) => {
-			e.preventDefault();
-			$input.val('');
-		});
-
-		//input의 버튼 컴포넌트
-		components.map((component)=>{
-			component.addEvent('clicked', function(this:HTMLElement, ...args:any[]){
-				_this.fireEvent('searching', $input[0], [$input.val()]);
+		if(this._input){
+			this._input.addEventListener('focusin', function(this:HTMLInputElement, e:Event){
+				e.preventDefault();
+				_this.fireEvent('inputFocusIn', e.currentTarget, {value:this.value});
 			});
-		});
+
+			this._input.addEventListener('focusout', function(this:HTMLInputElement, e:Event){
+				e.preventDefault();
+				_this.fireEvent('inputFocusOut', e.currentTarget, {value:this.value});
+			});
+
+			this._input.addEventListener('change', function(this:HTMLInputElement, e:Event){
+				e.preventDefault();
+
+				if(_this.validate){
+					_this.fireEvent('change', e.currentTarget, {value:this.value});
+				}
+			});
+		}
 	}
 
-	componentWillUnmount():void{
-		this.$input.off();
-		this.currentValue = undefined;
-		this.$input = undefined;
+	public componentWillUnmount():void{}
+
+	get validate():boolean{
+		let result = false;
+		if(this.attributes.required === 'true'){
+			if(this.value !== ''){
+				if(this.attributes.regex){
+					//value 체크 후, 정규식을 체크, 정규식 메시지에 여부에 따라 error표시
+					if(this._pattern.test(this.value)){
+						if(this._error){
+							this._error.textContent = '';
+						}
+						result = true;
+					}else{
+						if(this._error){
+							this._error.textContent = this.attributes.regexMsg || this.message.requiredTextField;
+						}
+						result = false;
+					}
+				}else{
+					//value만 체크함, 정규식이 없는 상태
+					if(this._error){
+						this._error.textContent = '';
+					}
+					result = true;
+				}
+			}else{
+				result = false;
+				if(this._error){
+					this._error.textContent = this.message.requiredTextField;
+				}
+			}
+		}else{
+			result = true;
+		}
+		return result;
 	}
 
-	get value():string|string[]|number|undefined{
-		return this.currentValue;
+	get value():string{
+		return (this._input) ? this._input.value : '';
 	}
-	set value(val:string|string[]|number|undefined){
-		this.$input.val(val);
+	set value(val:string){
+		if(this._input){
+			this._input.value = val;
+		}
+	}
+	get errorValue():string{
+		return (this._error) ? this._error.textContent||'' : '';
+	}
+	set errorValue(val:string){
+		if(this._error){
+			this._error.textContent = val;
+		}
 	}
 }

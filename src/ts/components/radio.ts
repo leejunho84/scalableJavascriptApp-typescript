@@ -1,8 +1,9 @@
 //Radio Component
 import Component from './component';
+import Rx from '../libs/rxjs';
 
 export default class Radio extends Component {
-	constructor(context:Element){
+	constructor(context:HTMLElement){
 		super(context);
 
 		this.selector = '[data-component-radio]';
@@ -13,18 +14,24 @@ export default class Radio extends Component {
 		let $this = $(this.target);
 		let $radio = $this.find('input[type=radio]');
 
-		$radio.off('change').on('change', (e) => {
-			let element = e.currentTarget;
-			let $this = $(e.currentTarget);
-			
-			if($this.prop('checked')){
-				$this.parent().addClass('checked').siblings().removeClass('checked');
-				$this.siblings().attr('checked');
-
-				this.fireEvent('change', e.currentTarget, [e.currentTarget.getAttribute('value')]);
-			}
-		});
+		const radios:NodeListOf<HTMLInputElement> = this.context.querySelectorAll('input[type=radio]');
 		
+		Rx.fromEvent(radios, 'input').subscribe((e)=>{
+			e.preventDefault();
+			
+			const element = e.currentTarget as HTMLInputElement;
+			const parent = element.parentElement;
+			const prevSibling = element.previousElementSibling;
+
+			if(prevSibling){
+				const currentClass = prevSibling.getAttribute('class');
+				const replceClass = (currentClass) ? currentClass.replace('selected', '') : '';
+				prevSibling.setAttribute('class', (currentClass)?`${replceClass} selected`:'selected');
+			}
+
+			this.fireEvent('change', element, [element.getAttribute('value')]);
+		});
+
 		//기본 선택값 처리
 		$radio.each((index, currentTarget) => {
 			let $this = $(currentTarget);

@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Component from "./component";
 import SelectboxVue from "./partials/selectboxVue";
+import { ISelectOption } from './interface/ISelectbox';
 
 export default class SelectBox extends Component {
-	constructor(context:Element){
+	constructor(context:HTMLElement){
 		super(context);
 
 		this.selector = '[data-component-selectbox]';
@@ -12,48 +13,56 @@ export default class SelectBox extends Component {
 
 	componentDidMount():void{
 		const _this:SelectBox = this;
-		let opts:any[] = [];
+		const appendClass = this.context.getAttribute('class');
+		let opts:ISelectOption[] = [];
 		let select:HTMLSelectElement = this.target.querySelector('select');
 		let options:NodeListOf<HTMLOptionElement> = select.querySelectorAll('option');
-		let currentLable:string|null = '';
+		let currentLabel:string|null = null;
 		let currentIndex:number = 0;
 
 		options.forEach((option, key, parent)=>{
 			if(option.getAttribute('selected') === 'selected'){
-				currentLable = option.textContent;
+				currentLabel = option.textContent;
 				currentIndex = key;
 			}
 			
 			opts.push({
-				label:option.textContent,
+				label:option.textContent || '',
 				value:option.value,
-				selected:option.getAttribute('selected'),
-				disabled:option.getAttribute('disabled')
+				selected:option.getAttribute('selected') || '',
+				disabled:option.getAttribute('disabled') || ''
 			});
 		});
+
+		//option에서 selected가 없을경우 첫번째 option으로 설정
+		if(currentLabel === null){
+			currentLabel = options[0].textContent;
+		}
 
 		const vueSelectComponent = new Vue({
 			el:this.context,
 			data:{
 				opened:false,
 				currentIndex:currentIndex,
-				currentLabel:currentLable,
-				opts:opts
+				currentLabel:currentLabel,
+				opts:opts,
+				appendClass:appendClass
 			},
 			components:{
 				SelectboxVue
 			},
 			template:`
 				<selectbox-vue
-					v-bind="{opened:opened, currentLabel:currentLabel, options:opts, currentIndex:currentIndex}"
+					v-bind:clsss="appendClass"
+					v-bind="{opened:opened, currentLabel:currentLabel, options:opts, currentIndex:currentIndex, class:appendClass}"
 					v-on="{
 						optionEnter:optionEnter,
 						optionLeave:optionLeave,
-						optionSelected:optionSelected,
+						optionSelected:optionSelected
 					}" />
 			`,
 			methods:{
-				optionEnter:function(...args:any[]){
+				optionEnter:function(){
 					if(this.opened){
 						this.opened = false;
 					}else{
