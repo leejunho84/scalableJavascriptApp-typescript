@@ -6,7 +6,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import alias from 'rollup-plugin-alias';
 import { uglify } from 'rollup-plugin-uglify';
-import autoExternal from 'rollup-plugin-auto-external';
+//import autoExternal from 'rollup-plugin-auto-external';
 
 /*
 import globals from 'rollup-plugin-node-globals';
@@ -57,7 +57,7 @@ export default [{
 	],
 	//external:['rxjs', 'rxjs/operators', 'rxjs/ajax', 'rxjs/testing', 'rxjs/webSocket'],
 	output:{
-		dir:'dist/release/assets/js',
+		dir:'dist/assets/js',
 		format:'system',
 		sourcemap:false,
 		chunkFileNames:'[name].js'

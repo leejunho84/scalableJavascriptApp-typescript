@@ -3,28 +3,20 @@ import { IAddress } from '../interface/IPostCodeSearch';
 
 @Component({
 	template: `
-		<ul class="result-wrap" v-bind:class="{active:actived}">
-			<li class="list" v-if="items.length > 0" v-for="(item, index) in items">
-				<a 	v-on:click="itemSelect"
+		<div class="list-group" v-bind:class="{active:actived}" style="min-height:250px; max-height:250px; overflow-y:auto; margin-top:12px; border:1px solid #eee">
+			<a class="list-group-item" v-if="items.length > 0"
+				v-for="(item, index) in items"
+				v-on:click="itemSelect"
 					v-bind="{href:index}"
 					ref="item">
-					<div class="address-wrap">
-						<h5 class="zip-code">
-							<span class="postcode6">({{ postCode(item) }})</span>
-						</h5>
-						<dl>
-							<dt class="addr-type">도로명</dt>
-							<dd class="addr">{{item.ko_doro}}</dd>
-							<dt class="addr-type">지 번</dt>
-							<dd class="addr">{{item.ko_jibeon}}</dd>
-						</dl>
-					</div>
+					<span class="postcode6">({{ postCode(item) }})</span>
+					<span class="addr">{{item.ko_common}} {{item.ko_doro}}</span>
 				</a>
-			</li>
-			<li class="list" v-else>
+			</a>
+			<span class="list-group-item" v-else>
 				검색결과가 없습니다.
-			</li>
-		</ul>
+			</span>
+		</div>
 	`
 })
 

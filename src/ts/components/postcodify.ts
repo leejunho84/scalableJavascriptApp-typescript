@@ -26,34 +26,38 @@ export default class PostCodeSearch extends Component {
 	componentDidMount(...components:any[]):void{
 		let _this = this;
 		const [search, detail]:ITextField[] = components;
-		this._searchComponent = search;
-		this._detailComponent = detail;
 		
-		this._searchComponent.addEvent('change', function(this:HTMLElement, args:IChangeEventArguments){
-			if(_this._postcodeKeyword !== args.value){
-				_this._addressValidate = false;
-			}
-			_this._postcodeKeyword = args.value;
-		});
-
-		this._searchComponent.addEvent('inputFocusIn', function(this:HTMLInputElement, args:IFocusInEventArguments){
-			if(_this._resultComponent){
-				_this._resultComponent.actived = true;				
-			}
-		});
-
-		this._searchComponent.addEvent('inputFocusOut', function(this:HTMLInputElement, args:IFocusOutEventArguments){
+		if(search){
+			this._searchComponent = search;
+			this._searchComponent.addEvent('change', function(this:HTMLElement, args:IChangeEventArguments){
+				if(_this._postcodeKeyword !== args.value){
+					_this._addressValidate = false;
+				}
+				_this._postcodeKeyword = args.value;
+			});
+	
+			this._searchComponent.addEvent('inputFocusIn', function(this:HTMLInputElement, args:IFocusInEventArguments){
+				if(_this._resultComponent){
+					_this._resultComponent.actived = true;
+				}
+			});
+	
+			this._searchComponent.addEvent('inputFocusOut', function(this:HTMLInputElement, args:IFocusOutEventArguments){
 				setTimeout(()=>{
 					if(_this._resultComponent){
 						_this._resultComponent.actived = false;
 					}
 				}, 20);
-		});
-
-		this._detailComponent.addEvent('changed', function(this:HTMLInputElement, val:string){
-			_this.fireEvent('detailAddressChanged', this, {value:this.value});
-		});
-
+			});
+		}
+		
+		if(detail){
+			this._detailComponent = detail;
+			this._detailComponent.addEvent('changed', function(this:HTMLInputElement, val:string){
+				_this.fireEvent('detailAddressChanged', this, {value:this.value});
+			});
+		}
+		
 		const postSubmit = this.context.querySelector('button');
 		if(postSubmit){
 			postSubmit.addEventListener('click', async (e)=>{
@@ -71,16 +75,16 @@ export default class PostCodeSearch extends Component {
 									//this._validate = searchComponent.validate;
 								}
 							}else{
-								UIkit.modal.alert(this.message.postCodeResultEmpty);
+								alert(this.message.postCodeResultEmpty);
 							}
 						}catch(e){
 							throw new Error(e);
 						}
 					}else{
-						UIkit.modal.alert(this.message.keywordIsShort);
+						alert(this.message.keywordIsShort);
 					}
 				}else{
-					UIkit.modal.alert(this.message.needAddress);
+					alert(this.message.needAddress);
 				}
 			});
 		}
@@ -108,7 +112,7 @@ export default class PostCodeSearch extends Component {
 				methods:{
 					itemSelected:function(address:IAddress){
 						if(_this._searchComponent){
-							_this._searchComponent.value = address.ko_doro;
+							_this._searchComponent.value = `${address.ko_common} ${address.ko_doro}`;
 							_this._addressValidate = _this._searchComponent.validate;
 						}						
 						_this._selectedAddress = address;
@@ -155,7 +159,7 @@ export default class PostCodeSearch extends Component {
 
 		return (postCodeInspact && detailInspact) ? true : false;
 	}
-
+	
 	get selectedAddress():IAddress|null{
 		return (this._selectedAddress) ? this._selectedAddress : null;
 	}
