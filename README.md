@@ -10,6 +10,7 @@
 
 ### 2.Atomic design pattern
 현 구조는 Atomic design pattern 지향하고 있습니다. Atomic design이란 엘리먼트 요소를 아주 작은단위까지 분할하여 그 분할된 요소들을 조합해 어플리케이션을 개발하는 방법론입니다. 예를 들어 `Input, Button, Label`(Atoms) 나누어 개발을 하고 이들을 조합하여 큰덩어리의(search) 컴포넌트(Molecules)를 개발하게 되는 것입니다. 이 방법론은 `Atoms, Molecules, Organisms, Templates, Pages` 5가지 단계로 구분이 됩니다. 각 단계별 자세한 사항은 [Atomic design pattern](http://bradfrost.com/blog/post/atomic-web-design/)을 참고하시면 됩니다.
+![Alt text](/diagram/searchdiagram.png "search component")
 
 ### 3.core
 core는 어플리케이션에서 모듈과 컴포넌트의 생명주기를 관할하고 흔히 쓰일수 있는 여러가지 Utils을 제공합니다. location.href 값을 key, value로 변환해서 반환해주거나, form요소 및 container요소 내에 있는 input요소들을 serialize하는 기능도 포함되어 있습니다. 그중에 가장 중요한 기능중에 하나로 페이지 로드가 완료되었을떄 body태그의 innerHtml를 가져와 data-module-* 과 data-component-*를 찾아 *에 해당하는 스크립트 파일을 동적로딩(systemJs)합니다. 그리곤 context를 주입하고 정의된 기능을 실행합니다.
@@ -19,17 +20,8 @@ sandbox는 중재자 역할을 합니다. 일관된 인터페이스를 보장하
 
 ### 5.module & component
 모듈과 컴포넌트를 정의하기전 규칙을 정하였습니다. 모듈은 페이지내에 1번만 존재할수 있고 컴포넌트는 여러번 존재할수는 있지만 모듈이 없다면 실행이 불가능합니다. 왜냐하면 모듈은 다른 모듈을 직접적인 연결이 아닌 중재자(sandbox)를 통해 느슨하게 결합되어 있는데 해당 모듈을 찾을때 쓰일수 있는 유일한 key가 필요했습니다. 그래서 해당 key를 모듈의 이름`data-module-*`로 정하였습니다. 모듈의 constructor가 실행이 되면 모듈의 context내에 `data-component-*` 찾아 import를 하게 되는데 모듈의 moduleWillMount에 import된 컴포넌트를 arguments에 넘겨줍니다. 그래서 moduleWillMount에서 넘겨받은 컴포넌트를 참조할수 있게 되는것 입니다.
-![Alt text](/architecture.png "sandbox architecture")
+![Alt text](/diagram/catalogdiagram.png "catagory module")
 
-```
-moduled과 component의 규칙 
-- 샌드박스(중재자)를 통해 자신의 메소드 또는 프로퍼티만 호출한다.
-- 자신의 컨텍스트 밖의 돔요소에 접근하면 안된다.
-- 비전역객제에 접근하지 마라.
-- 필요한것이 있다면 샌드박스에 물어보라.
-- 전역객체를 생성하지 마라
-- 직접 다른모듈의 참조하지 마라.
-```
 
 ### 6. 확장
 
