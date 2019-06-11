@@ -20,7 +20,7 @@ sandbox는 중재자 역할을 합니다. 일관된 인터페이스를 보장하
 
 ### 5.module & component
 모듈과 컴포넌트를 정의하기전 규칙을 정하였습니다. 모듈은 페이지내에 1번만 존재할수 있고 컴포넌트는 여러번 존재할수는 있지만 모듈이 없다면 실행이 불가능합니다. 왜냐하면 모듈은 다른 모듈을 직접적인 연결이 아닌 중재자(sandbox)를 통해 느슨하게 결합되어 있는데 해당 모듈을 찾을때 쓰일수 있는 유일한 key가 필요했습니다. 그래서 해당 key를 모듈의 이름`data-module-*`로 정하였습니다. 모듈의 constructor가 실행이 되면 모듈의 context내에 `data-component-*` 찾아 import를 하게 되는데 모듈의 moduleWillMount에 import된 컴포넌트를 arguments에 넘겨줍니다. 그래서 moduleWillMount에서 넘겨받은 컴포넌트를 참조할수 있게 되는것 입니다.
-![Alt text](/diagram/catalog_diagram.png "catagory module")
+![Alt text](/diagram/category_diagram.png "catagory module")
 
 
 ### 6. 확장
