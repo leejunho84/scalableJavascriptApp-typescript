@@ -39,7 +39,7 @@ public componentDidMount(...args:any[]){
     ...
 }
 ```
-위 이미지에 표현했듯이 `data-module-category`는 [data-component-categoryItem]을 가지고 있고 `data-component-categoryItem`은 [data-component-gallery, data-component-button]을 가지고 있습니다. 그리고 나머지 `data-component-indicator`는 `data-component-gallery`에 귀속됩니다. 여기서 중요한점은 자신에 귀속되어있는 컴포넌트를 찾는 범위는 자신의 context입니다. 즉 아래와 같습니다.
+위 이미지에 표현했듯이 `data-module-category`는 [data-component-categoryItem]을 가지고 있고 `data-component-categoryItem`은 [data-component-gallery, data-component-button]을 가지고 있습니다. 그리고 나머지 `data-component-indicator`는 `data-component-gallery`에 귀속됩니다. 여기서 중요한점은 자신의 context 내에서 컴포넌트를 찾습니다.
 ```
 <div class="row" data-module-category>
     <div class="col-sm-6 col-md-4">
@@ -66,11 +66,39 @@ public componentDidMount(...args:any[]){
 </div>
 ```
 
-### 6. 확장
+### 6.모듈 및 컴포넌트의 확장
+수량선택 기능이 있는 `data-component-quantity-selectbox`입니다. 이 컴포넌트는 `data-component-quantity`를 상속하고 있습니다. 여기서 중요한 포인트는 componentDidMount에서 해당 dom객체에 이벤트 및 데이터를 주입하고 있는데 Vue의 생명주기에서 mounted와 같은 상태입니다. 따라서 기본적인 컴포넌트를 `data-component-quantity`개발하고 selectbox형태로 개발시 componentDidMount를 override하여 확장하도록 설계하였습니다.
+
+```javascript
+import Quantity from "./quantity";
+
+export default class QuantitySelect extends Quantity {
+	constructor(context:HTMLElement){
+		super(context);
+
+		this.selector = '[data-component-quantity-selectbox]';
+		this.attrName = 'data-component-quantity-selectbox';
+	}
+
+	componentDidMount(...components:any[]):void{
+		//console.log('component_quantitySelect:', components);
+		const _this = this;
+		this.minQty = (this.attributes.minQuantity) ? +this.attributes.minQuantity : 1;
+		this.maxQty = (this.attributes.maxQuantity) ? +this.attributes.maxQuantity : 100;
+		
+		components.map((component)=>{
+            component.addEvent('selected', function(this:HTMLElement, ...args:any){
+				_this.fireEvent('changeQuantity', this, args);
+			});
+        });
+	}
+}
+
+```
 
 
 
-### 7. 추가된 기능
+### 7.추가된 기능
 - typescript로 개발되었고 es6 상위 버전으로 개발이 가능합니다.
 - 비동기로 자바스크립트를 가져옵니다. file format이 systemJs형대로 빌드되어 저장됩니다.
 - vue도 포함되어있어 vue로 개발이 가능합니다.
