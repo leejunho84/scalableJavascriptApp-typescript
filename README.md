@@ -13,7 +13,6 @@
 ![Alt text](/diagram/search_diagram.png "search component")
 
 ### 3.구조
-Typescript로 개발되어 
 
 #### core
 core는 어플리케이션에서 모듈과 컴포넌트의 생명주기를 관할하고 흔히 쓰일수 있는 여러가지 Utils을 제공합니다. location.href 값을 key, value로 변환해서 반환해주거나, form요소 및 container요소 내에 있는 input요소들을 serialize하는 기능도 포함되어 있습니다. 그중에 가장 중요한 기능중에 하나로 페이지 로드가 완료되었을떄 body태그의 innerHtml를 가져와 data-module-* 과 data-component-*를 찾아 *에 해당하는 스크립트 파일을 동적로딩(systemJs)합니다. 그리곤 context를 주입하고 정의된 기능을 실행합니다.
@@ -39,7 +38,7 @@ public componentDidMount(...args:any[]){
     ...
 }
 ```
-위 이미지에 표현했듯이 `data-module-category`는 [data-component-categoryItem]을 가지고 있고 `data-component-categoryItem`은 [data-component-gallery, data-component-button]을 가지고 있습니다. 그리고 나머지 `data-component-indicator`는 `data-component-gallery`에 귀속됩니다. 여기서 중요한점은 자신의 context 내에서 컴포넌트를 찾습니다.
+위 이미지에 표현했듯이 `data-module-category`는 [data-component-categoryItem]을 가지고 있고 `data-component-categoryItem`은 [data-component-gallery, data-component-selectbox]을 가지고 있습니다. 그리고 나머지 `data-component-indicator`는 `data-component-gallery`에 귀속됩니다. 여기서 중요한점은 자신의 context 내에서 컴포넌트만 찾는다는 점입니다.
 ```
 <div class="row" data-module-category>
     <div class="col-sm-6 col-md-4">
@@ -56,26 +55,60 @@ public componentDidMount(...args:any[]){
             <div class="caption">
                 <h3>Thumbnail label</h3>
                 <p>...</p>
-                <p>
-                    <a href="#" class="btn btn-primary" role="button">Button</a>
-                    <a href="#" class="btn btn-default" role="button">Button</a>
-                </p>
+                <div class="select-container" data-component-selectbox="">
+                    <select>
+                        <option value="">Dropdown</option>
+                        <option value="addcart">장바구니 담기</option>
+                        <option value="direct">바로구매</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
 </div>
 ```
 
-### 6.모듈(상위컴포넌트)과 컴포넌트의 이벤트흐름
-모듈과 컴포넌트는 상호유기적인 체계로 설계되어 있습니다. 모듈은 컴포넌트에 데이터를 주기도하고 컴포넌트에서 받은 이벤트를 다른 컴포넌트에 전달하는 역할도 합니다. 즉 모듈은 자신에 위치하에 있는 컴포넌트의 생명주기를 관리합니다. 그렇다면 데이터와 이벤트의 흐름을 어떻게 전달하고 전달받는지 아래의 예제를 통해 설명을 하겠습니다.
+### 6.모듈(상위컴포넌트)과 컴포넌트의 데이터 및 이벤트흐름
+모듈과 컴포넌트는 데이터와 이벤트관계로 설계되어 있습니다. 모듈은 컴포넌트에 데이터를 주기도하고 컴포넌트에서 받은 이벤트를 다른 컴포넌트에 전달하는 역할도 합니다. 즉 모듈은 자신에 위치하에 있는 컴포넌트의 생명주기를 관리합니다. 컴포넌트는 모듈에서 데이터를 받아 화면을 구성하기도하며 모듈에게 자신의 이벤트를 보낼 수도 있습니다. 그렇다면 데이터와 이벤트의 흐름을 어떻게 전달하고 전달받는지 아래의 예제를 통해 설명을 하겠습니다.
+![Alt text](/diagram/event-cycle.png "event cycle");
 ```javascript
-
+export default class Component extends Sandbox {
+    public addEvent(type:string, handler:Function):void
+    public fireEvent(type:string, target:EventTarget|null, params?:any):void
+} 
 ```
+모든 컴포넌트는 Component를 상속하고 있습니다. Component에는 addEvent와 fireEvent method가 정의되어 있습니다. addEvent는 수신부 fireEvent는 송신부로 설계되어 있습니다. 
+```javascript
+//Gallery Component
+export default class Gallery extends Component {
+	...
+	componentDidMount(...components:any[]){
+        const _this = this;
+	    const [indicator] = components;
+
+        // 'selected' 라는 사용자정의 이벤트를 구독하는 부분
+		indicator.addEvent('selected', function(this:HTMLElement, args:IIndicatorSelectedEvent){
+            //받은 args.index값을 가지고 다른 컴포넌트의 상태를 변경 로직
+        });
+    }
+...
+
+//Indicator Component
+export default class Indicator extends Component{
+    ...
+    componentDidMount(){
+        ...
+        // 'selected'로 {index:number}값을 포함하여 이벤트를 보낸다.
+        _this.fireEvent('selected', this.$el, {index:index});
+        ...
+    }
+...
+```
+
 
 
 ### 6.모듈 및 컴포넌트의 확장
 수량선택 기능이 있는 `data-component-quantity-selectbox`입니다. 이 컴포넌트는 `data-component-quantity`를 상속하고 있습니다. 여기서 중요한 포인트는 componentDidMount에서 해당 dom객체에 이벤트 및 데이터를 주입하고 있는데 Vue의 생명주기에서 mounted와 같은 상태입니다. 따라서 기본적인 컴포넌트를 `data-component-quantity`개발하고 selectbox형태로 개발시 componentDidMount를 override하여 확장하도록 설계하였습니다.
-
 ```javascript
 import Quantity from "./quantity";
 
