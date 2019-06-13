@@ -68,7 +68,7 @@ public componentDidMount(...args:any[]){
 </div>
 ```
 
-### 6.모듈(상위컴포넌트)과 컴포넌트의 데이터 및 이벤트흐름
+### 4.모듈(상위컴포넌트)과 컴포넌트의 데이터 및 이벤트흐름
 모듈과 컴포넌트는 데이터와 이벤트관계로 설계되어 있습니다. 모듈은 컴포넌트에 데이터를 주기도하고 컴포넌트에서 받은 이벤트를 다른 컴포넌트에 전달하는 역할도 합니다. 즉 모듈은 자신에 위치하에 있는 컴포넌트의 생명주기를 관리합니다. 컴포넌트는 모듈에서 데이터를 받아 화면을 구성하기도하며 모듈에게 자신의 이벤트를 보낼 수도 있습니다. 그렇다면 데이터와 이벤트의 흐름을 어떻게 전달하고 전달받는지 아래의 예제를 통해 설명을 하겠습니다.
 ![Alt text](/diagram/event-cycle.png "event cycle");
 ```javascript
@@ -105,10 +105,8 @@ export default class Indicator extends Component{
 ...
 ```
 
-
-
-### 6.모듈 및 컴포넌트의 확장
-수량선택 기능이 있는 `data-component-quantity-selectbox`입니다. 이 컴포넌트는 `data-component-quantity`를 상속하고 있습니다. 여기서 중요한 포인트는 componentDidMount에서 해당 dom객체에 이벤트 및 데이터를 주입하고 있는데 Vue의 생명주기에서 mounted와 같은 상태입니다. 따라서 기본적인 컴포넌트를 `data-component-quantity`개발하고 selectbox형태로 개발시 componentDidMount를 override하여 확장하도록 설계하였습니다.
+### 5.모듈 및 컴포넌트의 확장
+상속받은 클래스의 method를 override하여 확장하는 전략입니다. 기존 로직그대로 화면변경이(vue 컴포넌트 변경, dom변경, 이벤트변경) 있을시 유용하게 사용될 수 있습니다.
 ```javascript
 import Quantity from "./quantity";
 
@@ -121,24 +119,14 @@ export default class QuantitySelect extends Quantity {
 	}
 
 	componentDidMount(...components:any[]):void{
-		//console.log('component_quantitySelect:', components);
-		const _this = this;
-		this.minQty = (this.attributes.minQuantity) ? +this.attributes.minQuantity : 1;
-		this.maxQty = (this.attributes.maxQuantity) ? +this.attributes.maxQuantity : 100;
-		
-		components.map((component)=>{
-            component.addEvent('selected', function(this:HTMLElement, ...args:any){
-				_this.fireEvent('changeQuantity', this, args);
-			});
-        });
+        //변경될 로직 개발
+        //mobile first 개발 -> pc는 mobile를 상속하여 다르게 동작될수 있게 개발가능
 	}
 }
 
 ```
 
-
-
-### 7.추가된 기능
+### 6.추가된 기능
 - typescript로 개발되었고 es6 상위 버전으로 개발이 가능합니다.
-- 비동기로 자바스크립트를 가져옵니다. file format이 systemJs형대로 빌드되어 저장됩니다.
+- 비동기로 자바스크립트를 가져옵니다. file format이 systemJs 형태로 빌드되어 저장됩니다.
 - vue도 포함되어있어 vue로 개발이 가능합니다.
