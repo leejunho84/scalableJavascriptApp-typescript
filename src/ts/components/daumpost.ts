@@ -13,15 +13,15 @@ export default class Daumpost extends PostCodeSearch {
 		const _this = this;
 		const [search]:ITextField[] = components;
 		const postSubmit = this.context.querySelector('button');
+
 		if(postSubmit){
 			postSubmit.addEventListener('click', (e)=>{
 				e.preventDefault();
-				
 				new daum.Postcode({
 					oncomplete:(address)=>{
 						if(search){
 							search.value = address.roadAddress;
-						}						
+						}
 						//_this._selectedAddress = address;
 						_this.fireEvent('selectedAddress', _this.context, address);
 					}

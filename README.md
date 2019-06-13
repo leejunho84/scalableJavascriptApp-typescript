@@ -66,6 +66,13 @@ public componentDidMount(...args:any[]){
 </div>
 ```
 
+### 6.모듈(상위컴포넌트)과 컴포넌트의 이벤트흐름
+모듈과 컴포넌트는 상호유기적인 체계로 설계되어 있습니다. 모듈은 컴포넌트에 데이터를 주기도하고 컴포넌트에서 받은 이벤트를 다른 컴포넌트에 전달하는 역할도 합니다. 즉 모듈은 자신에 위치하에 있는 컴포넌트의 생명주기를 관리합니다. 그렇다면 데이터와 이벤트의 흐름을 어떻게 전달하고 전달받는지 아래의 예제를 통해 설명을 하겠습니다.
+```javascript
+
+```
+
+
 ### 6.모듈 및 컴포넌트의 확장
 수량선택 기능이 있는 `data-component-quantity-selectbox`입니다. 이 컴포넌트는 `data-component-quantity`를 상속하고 있습니다. 여기서 중요한 포인트는 componentDidMount에서 해당 dom객체에 이벤트 및 데이터를 주입하고 있는데 Vue의 생명주기에서 mounted와 같은 상태입니다. 따라서 기본적인 컴포넌트를 `data-component-quantity`개발하고 selectbox형태로 개발시 componentDidMount를 override하여 확장하도록 설계하였습니다.
 

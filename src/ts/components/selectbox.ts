@@ -79,7 +79,7 @@ export default class SelectBox extends Component {
 					this.opened = false;
 
 					//상위 모듈 및 컨테이너 컴포넌트에 이벤트 전달
-					_this.fireEvent('selected', target, [target.getAttribute('value')]);
+					_this.fireEvent('selected', target, {value:target.getAttribute('value')});
 				}
 			}
 		});

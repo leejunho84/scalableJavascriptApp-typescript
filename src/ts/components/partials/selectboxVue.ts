@@ -16,8 +16,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 						checked:currentIndex === index
 					}">
 					<a v-bind="{href:option.value, index:index, value:option.value}"
-						v-on:click="optionSelect">
-						<span class="label">{{option.label}}</span>
+						v-on:click="optionSelect">{{option.label}}
 					</a>
 				</li>
 			</ul>

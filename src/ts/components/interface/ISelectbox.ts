@@ -10,3 +10,7 @@ export interface ISelectOption {
     selected:string,
     disabled:string
 }
+
+export interface ISelectedEvent {
+    value:string;
+}

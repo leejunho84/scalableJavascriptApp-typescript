@@ -3,7 +3,7 @@ import { IAddress } from '../interface/IPostCodeSearch';
 
 @Component({
 	template: `
-		<div class="list-group" v-bind:class="{active:actived}" style="min-height:250px; max-height:250px; overflow-y:auto; margin-top:12px; border:1px solid #eee">
+		<div class="list-group postcodelist" v-bind:class="{active:actived}" style="max-height:250px; overflow-y:auto;">
 			<a class="list-group-item" v-if="items.length > 0"
 				v-for="(item, index) in items"
 				v-on:click="itemSelect"
