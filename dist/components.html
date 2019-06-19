@@ -105,9 +105,9 @@
 		</div>
 		  
 		<h3>Extend</h3>
-		<div class="row" data-module-page="{}">
+		<div class="row">
 			<div class="col-md-6">
-				<h4>data-component-postcodify (기본 주소검색)</h4>
+				<h4>component-postcodify (기본 주소검색)</h4>
 				<div class="postcodify" data-component-postcodify="{api://api.poesis.kr/post/search.php, required:true}">
 					<div class="input-group" data-component-textfield={required:true}>
 						<input type="text" class="form-control" placeholder="주소를 입력해주세요" aria-describedby="basic-addon2">
@@ -119,7 +119,7 @@
 				</div>
 			</div>
 			<div class="col-md-6">
-				<h4>data-component-daumpost</h4>
+				<h4>component-daumpost</h4>
 				<div class="daumpost" data-component-daumpost="{}">
 					<div class="input-group" data-component-textfield="{required:true}">
 						<input type="text" class="form-control" placeholder="주소를 입력해주세요" aria-describedby="basic-addon2">
@@ -127,6 +127,29 @@
 							<button class="btn btn-default" type="button">검색</button>
 						</span>
 					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<h4>component-daumpost</h4>
+				<div class="daumpost" data-component-daumpost="{}">
+					<div class="input-group" data-component-textfield="{required:true}">
+						<input type="text" class="form-control" placeholder="주소를 입력해주세요" aria-describedby="basic-addon2">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button">검색</button>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<h4>component-postcodify (기본 주소검색)</h4>
+				<div class="postcodify" data-component-postcodify="{api://api.poesis.kr/post/search.php, required:true}">
+					<div class="input-group" data-component-textfield={required:true}>
+						<input type="text" class="form-control" placeholder="주소를 입력해주세요" aria-describedby="basic-addon2">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button">검색</button>
+						</span>
+					</div>
+					<div class="result-wrap"></div>
 				</div>
 			</div>
 		</div>

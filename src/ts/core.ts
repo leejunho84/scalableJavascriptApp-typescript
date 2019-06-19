@@ -23,6 +23,41 @@ export default class Core {
 		}
 	}
 
+
+	public findSingleComponent(context:Element):void{
+		const parentContext:Element|null = (context.tagName === 'BODY') ? context:context.parentElement;
+		if(parentContext !== null){
+			const IDs:string[] = this.arraySameRemove(parentContext.innerHTML.match(/data-component-(?:\w|-)+/g) || []);
+			IDs.map((id, index, ids)=>{
+				const targets = context.querySelectorAll(`[${id}]`);
+				targets.forEach(async (target, index, targets)=>{
+					if(!this.hasParent(target)){
+						const Component = await import(`./components/${id.split('component-').slice(-1)[0].replace(/-\w{1}/g, ($1:string):string=>{
+							return $1.replace('-', '').toUpperCase();
+						})}.js`);
+						new Component.default(target).componentWillMount();
+					}
+				});
+			});
+		}
+	}
+
+	private hasParent(context:Element):boolean{
+		const parentContext = (context !== null) ? context.parentElement : null;
+		const outerHTML:string = (parentContext !== null) ? parentContext.outerHTML.replace(parentContext.innerHTML, '') : '';
+		const pattern:RegExp = new RegExp(/data-(?:module|component)-(?:\w|-)+/);
+
+		if(context.tagName !== 'BODY'){
+			if(parentContext !== null && !pattern.test(outerHTML)){
+				return this.hasParent(parentContext);
+			}else{
+				return true;
+			}
+		}else{
+			return false;
+		}
+	}
+
 	private findContextName(context:Element):string{
 		const html:string = context.outerHTML.replace(context.innerHTML, '');
 		const IDs:string[] = html.match(/data-(?:module|component)-(?:\w|-)+/) || [];
@@ -30,17 +65,14 @@ export default class Core {
 	}
 
 	public async moduleEventInjection(strHtml:string, defer?:()=>{}):Promise<Map<string, any>>{
-		let ID = strHtml.match(/data-(?:module)-(?:\w|-)+/g) || [];
-		let moduleNames:string[] = [];
-
-		for(let i=0; i<ID.length; i++){
-			let name = ID[i].replace(/data-/g, '').replace(/-/g, '_');
-			moduleNames.push(ID[i].split('module-').slice(-1)[0].replace(/(-\w{1})/g, ($1:string):string=>{
+		let IDs = strHtml.match(/data-(?:module)-(?:\w|-)+/g) || [];
+		let moduleNames = IDs.map((id, index, ids):string=>{
+			return id.split('module-').slice(-1)[0].replace(/-\w{1}/g, ($1:string):string=>{
 				return $1.replace('-', '').toUpperCase();
-			}));
-		}
+			});
+		});
 
-		try {
+		try{
 			const resolve = await Promise.all(moduleNames.map(async (name_1: string) => {
 				const MODULE = await import(`./modules/${name_1}.js`);
 				return MODULE;
@@ -53,8 +85,7 @@ export default class Core {
 				loadCompleteModule.set(moduleNames[index], module);
 			});
 			return loadCompleteModule;
-		}
-		catch (err) {
+		}catch(err) {
 			throw new Error(err);
 		}
 	}
@@ -64,12 +95,14 @@ export default class Core {
 		const strHtml:string = context.innerHTML;
 		const IDs:string[] = this.arraySameRemove<string>(strHtml.match(/data-(?:component)-(?:\w|-)+/g) || []);
 		const components:Map<string, string|Element>[] = [];
-
-		IDs.map((id, index)=>{
+		
+		//context innerHTML을 가져와 component를 찾는다. 그리곤 찾은 컴포넌트의 리스트의 상위 모듈과 컴포넌트가 현재 contextId와 같은지 비교후 같을때만 컴포넌트를 리턴한다.
+		IDs.forEach((id, index, ids)=>{
 			const componentContexts:NodeListOf<Element>|null = context.querySelectorAll('[' + id + ']');
 			componentContexts.forEach((componentContext, index, nodeList)=>{
 				this.findParent(componentContext, id, (parentId:string, parentContext:Element)=>{
 					const component:Map<string, string|Element> = new Map();
+
 					if(contextId === parentId){
 						const key = id.replace(/data-component-/g, '').replace(/(-\w{1})/g, function($1:string):string{
 							return $1.replace('-', '').toUpperCase();
@@ -82,7 +115,7 @@ export default class Core {
 				});
 			});
 		});
-		
+
 		Promise.all(components.map(async (component)=>{
 			const COMPONENT = await import(`./components/${component.get('name')}.js`);
 			return new COMPONENT.default(component.get('context')).componentWillMount();
@@ -145,37 +178,37 @@ export default class Core {
 		return serializes.join('&');
 	}
 
-	public mapQueryParams(str:string):Map<string, string|string[]>{
-		let result:Map<string, string|string[]> = new Map();
-		str.replace(/([^?=&]+)(?:=([^&]*))/g, (pattern, key, value):string=>{
-			if(result instanceof Map){
-				if(result.has(key)){
-					let currentValue = result.get(key);
-					if(currentValue){
-						if(currentValue instanceof Array){
-							currentValue.push(value);
-						}else{
-							result.set(key, [currentValue, value]);
+	public queryParams(str:string, type:string):string[]
+	public queryParams(str:string):Map<string, string|string[]>
+	public queryParams(str:string, type?:string){
+		if(type === 'array'){
+			let result:string[] = [];
+			str.replace(/([^?=&]+)(?:=([^&]*))/g, (pattern, key, value):string=>{
+				result.push(pattern);
+				return pattern;
+			});	
+			return result;
+		}else{
+			let result:Map<string, string|string[]> = new Map();
+			str.replace(/([^?=&]+)(?:=([^&]*))/g, (pattern, key, value):string=>{
+				if(result instanceof Map){
+					if(result.has(key)){
+						let currentValue = result.get(key);
+						if(currentValue){
+							if(currentValue instanceof Array){
+								currentValue.push(value);
+							}else{
+								result.set(key, [currentValue, value]);
+							}
 						}
+					}else{
+						result.set(key, value);
 					}
-				}else{
-					result.set(key, value);
 				}
-			}
-			return pattern;
-		});
-
-		return result;
-	}
-
-	public arrayQueryParams(str:string):string[]{
-		let result:string[] = [];
-		str.replace(/([^?=&]+)(?:=([^&]*))/g, (pattern, key, value):string=>{
-			result.push(pattern);
-			return pattern;
-		});
-
-		return result;
+				return pattern;
+			});	
+			return result;
+		}
 	}
 
 	public setCookie(name:string, value:string, exp?:number):void{

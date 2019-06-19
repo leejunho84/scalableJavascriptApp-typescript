@@ -21,6 +21,11 @@ export default class Sandbox {
 	public componentsInitalize(context:Element, mountFunc:Function):void{
 		this.core.componentEventInjection(this, context, mountFunc);
 	}
+	
+	//모듈이 따로 없이 독립적으로 실행해야하는 컴포넌트를 초기화하기위한 메소드
+	public singleComponentInitalize(context:Element):void{
+		this.core.findSingleComponent(context);
+	}
 
 	public rtnToAttributes(_target:HTMLElement, attrName:string|string[]):any{
 		if(attrName instanceof Array){
@@ -68,7 +73,7 @@ export default class Sandbox {
 	public queryParams(serialize:string):Map<string, string | string[]>
 	public queryParams(serialize:string, isArray:boolean):string[]
 	public queryParams(serialize:string, isArray?:boolean){
-		return (isArray) ? this.core.arrayQueryParams(serialize) : this.core.mapQueryParams(serialize);
+		return (isArray) ? this.core.queryParams(serialize, 'array') : this.core.queryParams(serialize);
 	}
 
 	public loadingBar(usable:boolean):void{
