@@ -32,10 +32,14 @@ export default class Core {
 				const targets = context.querySelectorAll(`[${id}]`);
 				targets.forEach(async (target, index, targets)=>{
 					if(!this.hasParent(target)){
-						const Component = await import(`./components/${id.split('component-').slice(-1)[0].replace(/-\w{1}/g, ($1:string):string=>{
-							return $1.replace('-', '').toUpperCase();
-						})}.js`);
-						new Component.default(target).componentWillMount();
+						try{
+							const Component = await import(`./components/${id.split('component-').slice(-1)[0].replace(/-\w{1}/g, ($1:string):string=>{
+								return $1.replace('-', '').toUpperCase();
+							})}.js`);
+							new Component.default(target).componentWillMount();
+						}catch(e){
+							throw new Error(e);
+						}
 					}
 				});
 			});

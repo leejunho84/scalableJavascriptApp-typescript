@@ -3,6 +3,8 @@
 ```
 > npm install
 > npm run server
+
+> http://localhost:5000/components
 ```
 
 ### 1.시작하며
@@ -10,6 +12,7 @@
 
 ### 2.Atomic design pattern
 현 구조는 Atomic design pattern 지향하고 있습니다. Atomic design이란 엘리먼트 요소를 아주 작은단위까지 분할하여 그 분할된 요소들을 조합해 어플리케이션을 개발하는 방법론입니다. 예를 들어 `Input, Button, Label`(Atoms) 나누어 개발을 하고 이들을 조합하여 큰덩어리의(search) 컴포넌트(Molecules)를 개발하게 되는 것입니다. 이 방법론은 `Atoms, Molecules, Organisms, Templates, Pages` 5가지 단계로 구분이 됩니다. 각 단계별 자세한 사항은 [Atomic design pattern](http://bradfrost.com/blog/post/atomic-web-design/)을 참고하시면 됩니다. 아래의 이미지는 searchComponent를 표현한것입니다.
+
 ![Alt text](/diagram/search_diagram.png "search component")
 
 ### 3.구조
@@ -21,7 +24,7 @@ core는 어플리케이션에서 모듈과 컴포넌트의 생명주기를 관�
 sandbox는 중재자 역할을 합니다. 일관된 인터페이스를 보장하고 모듈간 통신을 관할합니다. 모듈과 컴포넌트는 sandbox를 상속하고 있어 항상 sandbox에 요청하고 sandbox은 그에 해당하는 응답을 해줍니다. 그래서 모듈과 컴포넌트의 변경없이 sandbox의 확장만으로 여러 어플리케이션 개발이 가능합니다. messageProperty나 libs의 변경으로 이를 참조하는 모듈과 컴포넌트 변경을 안하고 sandbox의 확장 및 수정 만으로 된다는 것입니다.
 
 #### module & component
-모듈은 페이지내에 1번만 존재할수 있습니다. 왜냐하면 모듈은 다른모듈에 직접적인 참조가 아닌 중재자(sandbox)를 통해 느슨하게 참조되어 있는데 해당 모듈을 찾기 위해선 페이지내 유일한 key가 필요했습니다. 그러나 key의 중복이 있을경우에는 명확하게 원하는 모듈을 알수없기에 이러한 규칙을 정한것이였습니다. 그리고 컴포넌트는 자신의 context에 여러번 존재할 수 있지만 모듈 또는 상위 컴포넌트가 없다면 실행이 불가능합니다. 
+모듈은 페이지내에 1번만 존재할수 있습니다. 왜냐하면 모듈은 다른모듈에 직접적인 참조가 아닌 중재자(sandbox)를 통해 느슨하게 참조되어 있는데 해당 모듈을 찾기 위해선 페이지내 유일한 key가 필요했습니다. 그러나 key의 중복이 있을경우에는 명확하게 원하는 모듈을 찾을수없기에 이러한 규칙을 정한것이였습니다. 그리고 컴포넌트는 여러번 존재할 수 있지만 이벤트만 보내는 하위 컴포넌트일 경우에 해당 이벤트를 받아 다른 처리를 하는 상위 컴포넌트가 있어야 합니다. 따라서 단일기능으로서 독립적인 컴포넌트 외에 컴포넌트의 사용은 불필한 메모리를 잡는 것이기에 사용금지를 권고합니다.
 모듈과 컴포넌트는 상속된 상위 클래스의 constructor실행될때 moduleWillMount와 componentWillMount에 자신의 context에서 `data-component-*`를 찾아 해당객체를 arguments로 넘겨줍니다.
 ![Alt text](/diagram/category_diagram.png "catagory module")
 ```javascript
@@ -42,7 +45,7 @@ public componentDidMount(...args:any[]){
 ```
 <div class="row" data-module-category>
     <div class="col-sm-6 col-md-4">
-        <div class="thumbnail" data-component-categoryitem>
+        <div class="thumbnail" data-component-categoryitem={}>
             <div class="gallery-container" data-component-gallery={}>
                 <div class="img-container">
                     <img src="..." alt="...">
