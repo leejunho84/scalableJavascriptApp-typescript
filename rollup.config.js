@@ -35,11 +35,7 @@ export default [{
 	plugins:[
 		typescript(),
 		replace({
-			'process.env.NODE_ENV':JSON.stringify('prod'),
-			'Operators = module.default;':'Operators = module.default.operators;'
-		}),
-		alias({
-			'vue':path.resolve('node_modules/vue/dist/vue.js')
+			'process.env.NODE_ENV':JSON.stringify('prod')
 		}),
 		resolve({
 			// pass custom options to the resolve plugin
@@ -56,6 +52,7 @@ export default [{
 		(process.env.NODE_ENV === 'prod' && uglify())
 	],
 	//external:['rxjs', 'rxjs/operators', 'rxjs/ajax', 'rxjs/testing', 'rxjs/webSocket'],
+	external:['axios', 'vue', 'rxjs', 'rxjs/operators'],
 	output:{
 		dir:'dist/assets/js',
 		format:'system',
@@ -63,13 +60,3 @@ export default [{
 		chunkFileNames:'[name].js'
 	}
 }];
-
-/*
-,{
-	input:toObject(glob.sync(path.join(__dirname, 'node_modules/rxjs/_esm2015/.ts'))),
-	output:{
-		dir:'dist/release/assets/js/libs',
-		format:'iife'
-	}
-}
-*/

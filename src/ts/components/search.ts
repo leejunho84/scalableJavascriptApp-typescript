@@ -1,7 +1,6 @@
 import Component from './component';
 import { ISearchAttributes } from './interface/ISearch';
-import Rx from '../libs/rxjs';
-import { filter, map } from '../libs/operators';
+import rxjs from 'rxjs';
 
 export default class Search extends Component {
 	public attributes:ISearchAttributes;
@@ -15,7 +14,7 @@ export default class Search extends Component {
 
 	componentDidMount(...components:any[]):void{
 		//console.log(this.attributes);
-		/*Rx.range(1, 200).pipe(
+		/*rxjs.range(1, 200).pipe(
 			filter(x => x % 2 === 1),
 			map(x => x + x)
 		).subscribe(x => console.log(x));*/

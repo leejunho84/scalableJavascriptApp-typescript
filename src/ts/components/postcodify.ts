@@ -3,6 +3,7 @@ import SearchResultComponent from './partials/postCodeListVue';
 import Component from './component';
 import { ITextField, IChangeEventArguments, IFocusInEventArguments, IFocusOutEventArguments } from './interface/ITextField';
 import { IPostCodeAttributes, IPostCodify, IAddress } from './interface/IPostCodeSearch';
+import Axios from 'axios';
 
 export default class PostCodeSearch extends Component {
 	public attributes:IPostCodeAttributes;
@@ -41,7 +42,7 @@ export default class PostCodeSearch extends Component {
 					_this._resultComponent.actived = true;
 				}
 			});
-	
+
 			this._searchComponent.addEvent('inputFocusOut', function(this:HTMLInputElement, args:IFocusOutEventArguments){
 				setTimeout(()=>{
 					if(_this._resultComponent){
@@ -66,11 +67,10 @@ export default class PostCodeSearch extends Component {
 				if(this._searchComponent && this._searchComponent.validate){
 					if(this._postcodeKeyword.length > 2){
 						try{
-							const postCodeResult = await _this.postCodify(_this.attributes.api, {q:this._postcodeKeyword});
-							const parsePostCode = this.rtnJson(postCodeResult) as IPostCodify;
-							if(parsePostCode.count > 0){
+							const postCodeResult = await Axios.get<IPostCodify>(`${_this.attributes.api}?q=${this._postcodeKeyword}`);
+							if(postCodeResult.data.count > 0){
 								if(this._resultComponent){
-									this._resultComponent.items = parsePostCode.results;
+									this._resultComponent.items = postCodeResult.data.results;
 									this._resultComponent.actived = true;
 									//this._validate = searchComponent.validate;
 								}
@@ -124,22 +124,6 @@ export default class PostCodeSearch extends Component {
 		}
 	}
 
-	private postCodify(url:string, requestParams:{q:string}):Promise<string>{
-		return new Promise((resolve, reject)=>{
-			$.ajax({
-				url:url,
-				method:'GET',
-				data:requestParams,
-				complete:(response)=>{
-					if(response.status === 200){
-						resolve(response.responseText);
-					}else{
-						reject(`${this.message.serverError}(${response.status})`);
-					}
-				}
-			});
-		});
-	}
 	componentWillUnmount():void{}
 
 	get validate():boolean{

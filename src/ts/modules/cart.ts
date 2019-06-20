@@ -1,5 +1,4 @@
 import Module from "./module";
-import Rx from "../libs/rxjs";
 import { ICartUpdate } from "./interface/ICart";
 import { IHeader } from "./interface/IHeader";
 
@@ -11,20 +10,22 @@ export default class Cart extends Module{
 	public moduleWillMount(...components:any[]):void{
 		if(this.context){
 			/* remove orderItem */
-			const removeItemBtn = this.context.querySelectorAll('.btn-delete');
-			Rx.fromEvent(removeItemBtn, 'click').subscribe(async (e) => {
-				e.preventDefault();
-				const target = e.currentTarget as HTMLAnchorElement;
-
-				UIkit.modal.confirm(this.message.doRemoveItem, ()=>{
-					window.location.href = target.href;
+			const removeItemBtns = this.context.querySelectorAll('.btn-delete');
+			removeItemBtns.forEach((btn, index, btns)=>{
+				this.fromEvent(btn, 'click').subscribe(async (e) => {
+					e.preventDefault();
+					const target = e.currentTarget as HTMLAnchorElement;
+	
+					UIkit.modal.confirm(this.message.doRemoveItem, ()=>{
+						window.location.href = target.href;
+					});
 				});
 			});
 
 			/* remove all orderItem */
 			const removeItemAllBtn = this.context.querySelector('.btn-cart-delete-All');
 			if(removeItemAllBtn){
-				Rx.fromEvent(removeItemAllBtn, 'click').subscribe(async (e) => {
+				this.fromEvent(removeItemAllBtn, 'click').subscribe(async (e) => {
 					e.preventDefault();
 					const target = e.currentTarget as HTMLAnchorElement;
 
@@ -37,41 +38,43 @@ export default class Cart extends Module{
 			}
 
 			/* other btn */
-			const otherBtn = this.context.querySelectorAll('.btn-link');
-			Rx.fromEvent(otherBtn, 'click').subscribe(async (e) => {
-				const target = e.currentTarget as HTMLAnchorElement;
-				const type = (target.getAttribute('class') || '').match(/(optchange-btn|wish-btn|later-btn|addcart-btn)/);
-				
-				try{
-					if(type){
-						e.preventDefault();
-						const formData = this.serialized(target.closest('.product-opt_cart') as HTMLElement);
-
-						if(type[0] === 'optchange-btn'){
-							//대망의 옵션 변경
-						}else if(type[0] === 'wish-btn'){
-							const updatedWishList = await this.updateWishList(target.href, formData);
-							if(updatedWishList.hasOwnProperty('error')){
-								UIkit.notify(updatedWishList.error, {timeout:3000,pos:'top-center',status:'warning'});
-							}else{
-								if(updatedWishList.isWishListChk){
-									this.cookie('pageMsg', this.message.addItemToWishList);
+			const otherBtns = this.context.querySelectorAll('.btn-link');
+			otherBtns.forEach((btn, index, btns)=>{
+				this.fromEvent(btn, 'click').subscribe(async (e) => {
+					const target = e.currentTarget as HTMLAnchorElement;
+					const type = (target.getAttribute('class') || '').match(/(optchange-btn|wish-btn|later-btn|addcart-btn)/);
+					
+					try{
+						if(type){
+							e.preventDefault();
+							const formData = this.serialized(target.closest('.product-opt_cart') as HTMLElement);
+	
+							if(type[0] === 'optchange-btn'){
+								//대망의 옵션 변경
+							}else if(type[0] === 'wish-btn'){
+								const updatedWishList = await this.updateWishList(target.href, formData);
+								if(updatedWishList.hasOwnProperty('error')){
+									UIkit.notify(updatedWishList.error, {timeout:3000,pos:'top-center',status:'warning'});
 								}else{
-									this.cookie('pageMsg', this.message.removeItemToWishList);
+									if(updatedWishList.isWishListChk){
+										this.cookie('pageMsg', this.message.addItemToWishList);
+									}else{
+										this.cookie('pageMsg', this.message.removeItemToWishList);
+									}
+								}
+							}else if(type[0] === 'later-btn' || type[0] === 'addcart-btn'){
+								const updatedCart = await this.updateItems(target.href, formData);
+								this.cookie('pageMsg', (type[0] === 'addcart-btn') ? this.message.moveItemToCart : this.message.moveItemToLater);
+								if(updatedCart.hasOwnProperty('error')){
+									this.cookie('pageMsg', updatedCart.error);
 								}
 							}
-						}else if(type[0] === 'later-btn' || type[0] === 'addcart-btn'){
-							const updatedCart = await this.updateItems(target.href, formData);
-							this.cookie('pageMsg', (type[0] === 'addcart-btn') ? this.message.moveItemToCart : this.message.moveItemToLater);
-							if(updatedCart.hasOwnProperty('error')){
-								this.cookie('pageMsg', updatedCart.error);
-							}
+							window.location.reload();
 						}
-						window.location.reload();
+					}catch(err){
+						UIkit.notify(err, {timeout:3000,pos:'top-center',status:'error'});
 					}
-				}catch(err){
-					UIkit.notify(err, {timeout:3000,pos:'top-center',status:'error'});
-				}
+				});
 			});
 		}
 
@@ -139,5 +142,6 @@ export default class Cart extends Module{
 			})
 		});
 	}
+	
 	public moduleWillUnmount():void{}
 }

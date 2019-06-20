@@ -1,7 +1,5 @@
 import Component from "./component";
-import Rx from '../libs/rxjs';
 import { IQuantityAttributes } from "./interface/IQuantity";
-import { ITextField } from "./interface/ITextField";
 
 export default class Quantity extends Component {
 	public attributes:IQuantityAttributes;
@@ -36,22 +34,24 @@ export default class Quantity extends Component {
 		});
 
 		const updownButtons = this.context.querySelectorAll('.btn');
-		Rx.fromEvent(updownButtons, 'click').subscribe((e)=>{
-			e.preventDefault();
-			const target = e.currentTarget as HTMLButtonElement
-			let quantity = this.currentQty;
-			let type:string|null = target.getAttribute('class');
-
-			if(type !== null){
-				if(/plus/.test(type)){
-					quantity++;
-				}else if(/minus/.test(type)){
-					quantity--;
+		updownButtons.forEach((btn, index, btns)=>{
+			this.fromEvent(btn, 'click').subscribe((e)=>{
+				e.preventDefault();
+				const target = e.currentTarget as HTMLButtonElement
+				let quantity = this.currentQty;
+				let type:string|null = target.getAttribute('class');
+	
+				if(type !== null){
+					if(/plus/.test(type)){
+						quantity++;
+					}else if(/minus/.test(type)){
+						quantity--;
+					}
+					this.currentQty = this.quantityByCheckLimit(quantity);
+					this.fireEvent('changeQuantity', e.currentTarget, this.currentQty);
+					textComponent.value = this.currentQty;
 				}
-				this.currentQty = this.quantityByCheckLimit(quantity);
-				this.fireEvent('changeQuantity', e.currentTarget, this.currentQty);
-				textComponent.value = this.currentQty;
-			}
+			});
 		});
 	}
 

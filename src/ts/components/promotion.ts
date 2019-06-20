@@ -1,5 +1,6 @@
 import Component from "./component";
 import { ITextField } from "./interface/ITextField";
+import Axios from "axios";
 
 export default class Promotion extends Component {
 	constructor(context:HTMLElement){
@@ -22,7 +23,7 @@ export default class Promotion extends Component {
 				if(text.validate){
 					try{
 						if(form){
-							const submitedCode = await this.submitCode(form.action, this.serialized(form));
+							const submitedCode = await Axios.post(form.action, this.serialized(form));
 							window.location.reload();
 							console.log(submitedCode);
 						}
@@ -62,82 +63,6 @@ export default class Promotion extends Component {
 			e.preventDefault();
 			Method.removeCode( $(this).attr("href") );
 		});
-		*/
-	}
-
-	protected removeCode(url:string):Promise<any>{
-		return new Promise((resolve, reject)=>{
-			$.ajax({
-				url:url,
-				method:'GET',
-				complete:(reponse)=>{
-
-				}
-			})
-		});
-
-		/*BLC.ajax({
-			url: url,
-			type: "GET"
-		}, function(data) {
-			if (data.error && data.error == "illegalCartOperation") {
-				UIkit.modal.alert(data.exception);
-				sandbox.setLoadingBarState(false);
-			} else {
-				window.location.reload();
-			}
-		});*/
-	}
-
-	protected submitCode(url:string, formData:string):Promise<any>{
-		return new Promise((resolve, reject)=>{
-			$.ajax({
-				url:url,
-				method:'POST',
-				data:formData,
-				complete:(response)=>{
-					if(response.status === 200){
-						resolve(response.responseText);
-					}else{
-						reject(`${this.message.serverError}(${response.status})`);
-					}
-				}
-			});
-		});
-		/*
-		var $form = Method.$form;
-		BLC.ajax({url: $form.attr('action'),
-				type: "POST",
-				data: $form.serialize()
-			}, function(data, extraData) {
-
-				var endPointData = $.extend(extraData, { 
-					promoCode : sandbox.utils.url.getQueryStringParams( $form.serialize() ).promoCode
-				});
-
-				if (data.error && data.error == 'illegalCartOperation') {
-					sandbox.setLoadingBarState(false);
-					UIkit.modal.alert(data.exception);
-					endPointData.exception = 'illegalCartOperation';
-					
-				} else {
-					if(!extraData.promoAdded) {
-						sandbox.setLoadingBarState(false);
-						Method.$errorMessage.find(".text").html(extraData.exception)
-						Method.$errorMessage.removeClass("uk-hidden");
-					} else {
-						if( _.isElement( Method.replaceTarget) ){
-							sandbox.setLoadingBarState(false);
-							$(Method.replaceTarget).html( data );
-						}else{
-							window.location.reload();
-						}
-					}
-				}
-
-				endPoint.call('applyPromoCode', endPointData);
-			}
-		);
 		*/
 	}
 

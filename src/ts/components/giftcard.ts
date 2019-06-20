@@ -1,7 +1,7 @@
 import Component from "./component";
-import Rx from "../libs/rxjs";
 import { ITextField } from "./interface/ITextField";
 import { IGiftCard } from "./interface/IGiftCard";
+import Axios from "axios";
 
 export default class GiftCard extends Component implements IGiftCard{
 	constructor(context:HTMLElement){
@@ -15,7 +15,7 @@ export default class GiftCard extends Component implements IGiftCard{
 		const [text]:ITextField[] = components;
 		const button = this.context.querySelector('button');
 		if(button){
-			Rx.fromEvent(button, 'click').subscribe(async (e)=>{
+			this.fromEvent(button, 'click').subscribe(async (e)=>{
 				e.preventDefault();
 				const target = e.currentTarget as HTMLButtonElement;
 				const form = target.closest('form');
@@ -23,7 +23,7 @@ export default class GiftCard extends Component implements IGiftCard{
 					try{
 						const serializeData = this.serialized(form);
 						//return 값 변경필요
-						await this.submitGiftCard(form.action, serializeData);
+						await Axios.post(form.action, serializeData);
 						window.location.reload();						
 					}catch(err){
 						throw new Error(err);
@@ -32,22 +32,6 @@ export default class GiftCard extends Component implements IGiftCard{
 			});
 		}
 	}
-
-	protected submitGiftCard(url:string, data:any):Promise<any>{
-		return new Promise((resolve, reject)=>{
-			$.ajax({
-				url:url,
-				method:'POST',
-				data:data,
-				complete:(response)=>{
-					if(response.status === 200){
-						resolve(response);
-					}else{
-						reject(`${this.message.serverError}(${response.status})`);
-					}
-				}
-			});
-		});
-	}
+	
 	public componentWillUnmount():void{}
 }

@@ -1,7 +1,5 @@
 import Module from "./module";
-import { ICartUpdate } from "./interface/ICart";
-import Rx from '../libs/rxjs';
-import { map } from "../libs/operators";
+import { ICartUpdate, ICartUpdateProcessor } from "./interface/ICart";
 
 export default class MiniCart extends Module {
 	constructor(){
@@ -11,7 +9,7 @@ export default class MiniCart extends Module {
 	public moduleWillMount():void{
 		if(this.context){
 			this.delegate(this.context, 'a', 'click').subscribe((e) => {
-				const target:HTMLAnchorElement = e.delegate;
+				const target = e.delegate as HTMLAnchorElement;
 				if(target !== null && target.hasAttribute('data-remove-item')){
 					e.event.preventDefault();
 					this.removeItem(target.href);
@@ -29,7 +27,7 @@ export default class MiniCart extends Module {
 	}
 
 	public async update(callback?:Function){
-		var params:ICartUpdate = {
+		var params = {
 			'mode':'template',
 			'templatePath':'/cart/partials/miniCart',
 			'resultVar':'cart',
@@ -53,7 +51,7 @@ export default class MiniCart extends Module {
 		}
 	}
 	
-	private updateCart(url:string, params:ICartUpdate):Promise<string>{
+	private updateCart(url:string, params:ICartUpdateProcessor):Promise<string>{
 		return new Promise((resolve, reject)=>{
 			$.ajax({
 				url:url,

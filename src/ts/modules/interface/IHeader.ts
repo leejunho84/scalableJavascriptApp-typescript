@@ -1,5 +1,4 @@
 import IModule from "./imodule";
-import { SingleAssignmentDisposable } from "rx";
 
 export interface IHeader extends IModule{
     inspectLogin():Promise<any>;

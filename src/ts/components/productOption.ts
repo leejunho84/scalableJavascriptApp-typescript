@@ -2,6 +2,7 @@ import Component from "./component";
 import { IProductOptionType, IOption, ISku, ISkuInventoryRequestParams, ISkuPricing, ISelectedSku, ISkuRestricts } from "./interface/IProductOption";
 import Vue from "vue";
 import OptionRadio from './partials/optionRadioVue';
+import Axios from "axios";
 
 export default class ProductOption extends Component {
 	public attributes:Map<string, any>;
@@ -40,7 +41,15 @@ export default class ProductOption extends Component {
 
 		(async ()=>{
 			try{
-				this.skuData = await this.getProductSkuInventory();
+				const productSkuInventory = await Axios.get<ISku>('/productSkuInventory.json', {
+					data:{
+						productId:this.productId //required,
+						//useMaxQuantity:true //구매제한수량 사용여부
+						//fulfillmentType:'PHYSICAL_PICKUP' | PHYSICAL_SHIP
+					}
+				});
+
+				this.skuData = productSkuInventory.data;
 				this.allSkuData = this.skuData.skuPricing;
 				//옵션 데이터 나누기 예) COLOR:{}, SIZE:{} ...
 				if(this.allSkuData !== null){
@@ -117,33 +126,6 @@ export default class ProductOption extends Component {
 		}
 
 		return result;
-	}
-
-	private getProductSkuInventory():Promise<ISku>{
-		return new Promise((resolve, reject)=>{
-			if(this.productId !== null && this.productId !== undefined){
-				const params:ISkuInventoryRequestParams = {
-					productId:this.productId //required,
-					//useMaxQuantity:true //구매제한수량 사용여부
-					//fulfillmentType:'PHYSICAL_PICKUP' | PHYSICAL_SHIP
-				};
-
-				$.ajax({
-					url:'/productSkuInventory.json',
-					method:'GET',
-					data:params,
-					complete:(response)=>{
-						if(response.status === 200){
-							resolve(response.responseJSON);
-						}else{
-							reject(`${this.message.serverError}(${response.status})`);
-						}
-					}
-				});
-			}else{
-				reject(this.message.emptyProductId);
-			}
-		});
 	}
 
 	private receiveToEvent(optionType:string, selectedValue:number):void{
