@@ -1,5 +1,6 @@
 //Radio Component
 import Component from './component';
+import Rx from 'rxjs';
 
 export default class Radio extends Component {
 	constructor(context:HTMLElement){
@@ -15,7 +16,7 @@ export default class Radio extends Component {
 
 		const radios:NodeListOf<HTMLInputElement> = this.context.querySelectorAll('input[type=radio]');
 		radios.forEach((radio, index, radios)=>{
-			this.fromEvent(radio, 'input').subscribe((e)=>{
+			Rx.fromEvent(radio, 'input').subscribe((e)=>{
 				e.preventDefault();
 				
 				const element = e.currentTarget as HTMLInputElement;

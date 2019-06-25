@@ -1,4 +1,5 @@
 import Module from "./module";
+import Rx from "rxjs";
 import { ICartUpdate } from "./interface/ICart";
 import { IHeader } from "./interface/IHeader";
 
@@ -12,7 +13,7 @@ export default class Cart extends Module{
 			/* remove orderItem */
 			const removeItemBtns = this.context.querySelectorAll('.btn-delete');
 			removeItemBtns.forEach((btn, index, btns)=>{
-				this.fromEvent(btn, 'click').subscribe(async (e) => {
+				Rx.fromEvent(btn, 'click').subscribe(async (e) => {
 					e.preventDefault();
 					const target = e.currentTarget as HTMLAnchorElement;
 	
@@ -25,7 +26,7 @@ export default class Cart extends Module{
 			/* remove all orderItem */
 			const removeItemAllBtn = this.context.querySelector('.btn-cart-delete-All');
 			if(removeItemAllBtn){
-				this.fromEvent(removeItemAllBtn, 'click').subscribe(async (e) => {
+				Rx.fromEvent(removeItemAllBtn, 'click').subscribe(async (e) => {
 					e.preventDefault();
 					const target = e.currentTarget as HTMLAnchorElement;
 
@@ -40,7 +41,7 @@ export default class Cart extends Module{
 			/* other btn */
 			const otherBtns = this.context.querySelectorAll('.btn-link');
 			otherBtns.forEach((btn, index, btns)=>{
-				this.fromEvent(btn, 'click').subscribe(async (e) => {
+				Rx.fromEvent(btn, 'click').subscribe(async (e) => {
 					const target = e.currentTarget as HTMLAnchorElement;
 					const type = (target.getAttribute('class') || '').match(/(optchange-btn|wish-btn|later-btn|addcart-btn)/);
 					

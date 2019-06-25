@@ -1,6 +1,7 @@
 import Component from "./component";
 import { ITextField } from "./interface/ITextField";
 import Axios from "axios";
+import Rx from "rxjs";
 
 export default class Promotion extends Component {
 	constructor(context:HTMLElement){
@@ -18,7 +19,7 @@ export default class Promotion extends Component {
 		const promos = this.context.querySelectorAll('.promo-list');
 
 		if(submitBtn){
-			this.fromEvent(submitBtn, 'click').subscribe(async (e)=>{
+			Rx.fromEvent(submitBtn, 'click').subscribe(async (e)=>{
 				e.preventDefault();
 				if(text.validate){
 					try{

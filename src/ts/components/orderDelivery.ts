@@ -1,3 +1,4 @@
+import Rx from 'rxjs';
 import Component from "./component";
 import Vue from "vue";
 import addressInfoDetail from "./partials/addressInfoDetailVue";
@@ -29,7 +30,7 @@ export default class OrderDelivery extends Component {
 
 		const submitShippingFormBtn = this.context.querySelector('[data-order-shipping-submit-btn]');
 		if(submitShippingFormBtn){
-			this.fromEvent(submitShippingFormBtn, 'click').subscribe(async (e)=>{
+			Rx.fromEvent(submitShippingFormBtn,'click').subscribe(async (e)=>{
 				e.preventDefault();
 				const target = e.currentTarget as Element;
 				const form = (target) ? target.closest('form') : null;

@@ -1,5 +1,6 @@
 import Component from "./component";
 import { IQuantityAttributes } from "./interface/IQuantity";
+import Rx from 'rxjs';
 
 export default class Quantity extends Component {
 	public attributes:IQuantityAttributes;
@@ -35,7 +36,7 @@ export default class Quantity extends Component {
 
 		const updownButtons = this.context.querySelectorAll('.btn');
 		updownButtons.forEach((btn, index, btns)=>{
-			this.fromEvent(btn, 'click').subscribe((e)=>{
+			Rx.fromEvent(btn, 'click').subscribe((e)=>{
 				e.preventDefault();
 				const target = e.currentTarget as HTMLButtonElement
 				let quantity = this.currentQty;

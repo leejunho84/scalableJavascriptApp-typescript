@@ -23,7 +23,7 @@ function toObject(paths){
 	var ret = {};
 
 	paths.forEach(function(path) {
-		if(!/(interface|messageProperty)/.test(path)){
+		if(!/(interface|messageProperty|index)/.test(path)){
 			ret[path.split('/ts').slice(-1)[0].replace(/(?:^\/|\.ts)/g, '')] = path;
 		}
 	});
@@ -51,8 +51,7 @@ export default [{
 		//(process.env.NODE_ENV === 'dev' && livereload('dist')),
 		(process.env.NODE_ENV === 'prod' && uglify())
 	],
-	//external:['rxjs', 'rxjs/operators', 'rxjs/ajax', 'rxjs/testing', 'rxjs/webSocket'],
-	external:['axios', 'vue', 'rxjs', 'rxjs/operators'],
+	external:['axios', 'vue', 'rxjs', 'rxjs/operators', 'rxjs/Rx'],
 	output:{
 		dir:'dist/assets/js',
 		format:'system',

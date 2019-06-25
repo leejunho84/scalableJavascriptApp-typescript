@@ -1,7 +1,6 @@
 import Core from './core';
 import Message from './messageProperty';
-import rxjs from 'rxjs';
-import {map} from 'rxjs/operators';
+import Rx from 'rxjs';
 
 export default class Sandbox {
 	private core:Core;
@@ -84,14 +83,14 @@ export default class Sandbox {
 		}
 	}
 
-	public fromEvent(target:Element, eventName:string):rxjs.Observable<Event>{
-		return rxjs.fromEvent(target, eventName);
+	public fromEvent(target:Element, eventName:string):Rx.Observable<Event>{
+		return Rx.fromEvent(target, eventName);
 	}
 
-	public delegate(wrapper:Element, selector:string, eventName:string):rxjs.Observable<{event:Event, delegate:Element|null}>{
-		return rxjs.fromEvent(wrapper, eventName).pipe(
-			map((e) => {
-				const target = e.target as Element
+	public delegate(wrapper:Element, selector:string, eventName:string):Rx.Observable<{event:Event, delegate:Element|null}>{
+		return Rx.fromEvent(wrapper, eventName).pipe(
+			Rx.operators.map((e) => {
+				const target = e.target as Element;
 				return {
 					event:e,
 					delegate:target.closest(selector)
@@ -100,7 +99,7 @@ export default class Sandbox {
 		);
 	}
 
-	public removeDelegate(subscription:rxjs.Subscription):void{
+	public removeDelegate(subscription:Rx.Subscription):void{
 		subscription.unsubscribe();
 	}
 

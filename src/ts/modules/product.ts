@@ -2,6 +2,7 @@ import Module from './module';
 import { ISkuPricing, ISelectedSku, IProductOptionComponent, IChangeFirstOptions } from '../components/interface/IProductOption';
 import { IQuantity } from '../components/interface/IQuantity';
 import { IHeader } from './interface/IHeader';
+import Rx from 'rxjs';
 
 export default class Product extends Module {
 	private productOptionComponent?:IProductOptionComponent;
@@ -49,54 +50,58 @@ export default class Product extends Module {
 		});
 
 		if(this.context){
+
+
 			const addItemBtnContainer = this.context.querySelector('[data-add-item]');
-			const addCartBtn = (addItemBtnContainer) ? addItemBtnContainer.querySelectorAll('a') : [];
-			addCartBtn.forEach((btn, index, btns)=>{
-				btn.fromEvent(addCartBtn, 'click').subscribe((e)=>{
-					e.preventDefault();
-	
-					const target = e.target as HTMLAnchorElement;
-					const href:string = target.getAttribute('href') || '';
-					const eventType:string|null = target.getAttribute('action-type') || '';
-					const form:HTMLFormElement|null = target.closest('form');
-					const queryParams:Map<string, string|string[]>|string[] = this.queryParams(this.serialized(form));
-	
-					if(href !== null){
-						(async (flag:string)=>{
-							try{
-								const inspectOptions = await this.inspectOptions();
-								const inspectQuantity = await this.inspectQuantity();
-								const inspectAddOnItems = await this.inspectAddonItems();
-								const inspectMadeItemRequest = await this.inspectMakeItemRequest(queryParams);
-								const inspectLogin = await this.inspectLogin();
-								const inspectAddCart = await this.inspectAddCart(href, inspectMadeItemRequest);
-								const miniCartModule = this.mountedModule('minicart');
-								switch(eventType){
-									case 'add':
-										miniCartModule.update();
-										break;
-									case 'modify':
-										/*var url = Core.Utils.url.removeParamFromURL( Core.Utils.url.getCurrentUrl(), $(this).attr('name') );
-										Core.Loading.show();
-										endPoint.call( 'cartAddQuantity', cartData );
-										_.delay(function(){
-											window.location.assign( url );
-										}, 500);*/
-										break;
-									case 'redirect':
-										this.loadingBar(true);
-										setTimeout(()=>{
-											window.location.href = this.contextPath + '/checkout';
-										}, 500);
-										break;
+			if(addItemBtnContainer){
+				const addCartBtn = addItemBtnContainer.querySelectorAll('a');
+				addCartBtn.forEach((btn, index, btns)=>{
+					Rx.fromEvent(btn, 'click').subscribe((e)=>{
+						e.preventDefault();
+		
+						const target = e.target as HTMLAnchorElement;
+						const href:string = target.getAttribute('href') || '';
+						const eventType:string|null = target.getAttribute('action-type') || '';
+						const form:HTMLFormElement|null = target.closest('form');
+						const queryParams:Map<string, string|string[]>|string[] = this.queryParams(this.serialized(form));
+		
+						if(href !== null){
+							(async (flag:string)=>{
+								try{
+									const inspectOptions = await this.inspectOptions();
+									const inspectQuantity = await this.inspectQuantity();
+									const inspectAddOnItems = await this.inspectAddonItems();
+									const inspectMadeItemRequest = await this.inspectMakeItemRequest(queryParams);
+									const inspectLogin = await this.inspectLogin();
+									const inspectAddCart = await this.inspectAddCart(href, inspectMadeItemRequest);
+									const miniCartModule = this.mountedModule('minicart');
+									switch(eventType){
+										case 'add':
+											miniCartModule.update();
+											break;
+										case 'modify':
+											/*var url = Core.Utils.url.removeParamFromURL( Core.Utils.url.getCurrentUrl(), $(this).attr('name') );
+											Core.Loading.show();
+											endPoint.call( 'cartAddQuantity', cartData );
+											_.delay(function(){
+												window.location.assign( url );
+											}, 500);*/
+											break;
+										case 'redirect':
+											this.loadingBar(true);
+											setTimeout(()=>{
+												window.location.href = this.contextPath + '/checkout';
+											}, 500);
+											break;
+									}
+								}catch(e){
+									UIkit.notify(e, {timeout:3000,pos:'top-center',status:'danger'});
 								}
-							}catch(e){
-								UIkit.notify(e, {timeout:3000,pos:'top-center',status:'danger'});
-							}
-						})(href);
-					}
+							})(href);
+						}
+					});
 				});
-			});
+			}
 		}
 	}
 

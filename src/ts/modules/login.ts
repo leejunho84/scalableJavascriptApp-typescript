@@ -1,6 +1,7 @@
 import Module from "./module";
 import { IIdComponent, IPasswordComponent, IUsableAutoLogin, ILogined } from "./interface/ILogin";
 import axios from "axios";
+import Rx from "rxjs";
 
 export default class Login extends Module {
 	private _id?:IIdComponent;
@@ -21,7 +22,7 @@ export default class Login extends Module {
 			const form = this.context.querySelector<HTMLFormElement>('form');
 			const submitBtn = this.context.querySelector<HTMLButtonElement>('button[type=submit]');
 			if(submitBtn && form){
-				this.fromEvent(submitBtn, 'click').subscribe((e)=>{
+				Rx.fromEvent(submitBtn, 'click').subscribe((e)=>{
 					const target = e.currentTarget as HTMLButtonElement;
 					const queryParams = this.serialized(form);
 					(async ()=>{
