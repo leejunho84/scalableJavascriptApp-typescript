@@ -53,7 +53,7 @@ export default [{
 	],
 	external:['axios', 'vue', 'rxjs', 'rxjs/operators', 'rxjs/Rx'],
 	output:{
-		dir:'dist/assets/js',
+		dir:'static/js',
 		format:'system',
 		sourcemap:false,
 		chunkFileNames:'[name].js'
