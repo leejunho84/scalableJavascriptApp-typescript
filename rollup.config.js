@@ -4,58 +4,58 @@ import typescript from 'rollup-plugin-typescript';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
-import alias from 'rollup-plugin-alias';
 import { uglify } from 'rollup-plugin-uglify';
-//import autoExternal from 'rollup-plugin-auto-external';
-
-/*
-import globals from 'rollup-plugin-node-globals';
-import { terser } from 'rollup-plugin-terser';
 import livereload from 'rollup-plugin-livereload';
-import builtins from 'rollup-plugin-node-builtins';
-import resolveAlias from 'rollup-plugin-resolve-alias';
-import buble from 'rollup-plugin-buble'
-import VuePlugin from 'rollup-plugin-vue';
-import babel from 'rollup-plugin-babel';
-*/
+import serve from 'rollup-plugin-serve';
+import multiInput from 'rollup-plugin-multi-input';
+import html from '@open-wc/rollup-plugin-html';
 
-function toObject(paths){
-	var ret = {};
-
-	paths.forEach(function(path) {
-		if(!/(interface|messageProperty|index)/.test(path)){
-			ret[path.split('/ts').slice(-1)[0].replace(/(?:^\/|\.ts)/g, '')] = path;
-		}
-	});
-	return ret;
+const filter = (paths, check) => {
+	return paths.filter(v => !/(interface|messageProperty)/.test(v));
 }
 
-export default [{
-	input:toObject(glob.sync(path.join(__dirname, 'src/ts/**/*.ts'))),
-	plugins:[
-		typescript(),
-		replace({
-			'process.env.NODE_ENV':JSON.stringify('prod')
-		}),
-		resolve({
-			// pass custom options to the resolve plugin
-			customResolveOptions: {
-				moduleDirectory:path.resolve('node_modules')
-			}
-		}),
-		commonjs({
-			include:path.resolve('node_modules/**'),
-			sourceMap: false
-		}),
-		//autoExternal(),
-		//(process.env.NODE_ENV === 'dev' && livereload('dist')),
-		(process.env.NODE_ENV === 'prod' && uglify())
-	],
-	external:['axios', 'vue', 'rxjs', 'rxjs/operators', 'rxjs/Rx'],
-	output:{
-		dir:'static/js',
-		format:'system',
-		sourcemap:false,
-		chunkFileNames:'[name].js'
+export default [
+	{
+		input:filter(glob.sync(path.join(__dirname, 'src/js/**/*.ts'))),
+		plugins:[
+			multiInput(),
+			typescript(),
+			replace({
+				'process.env.NODE_ENV':JSON.stringify('prod')
+			}),
+			resolve({
+				// pass custom options to the resolve plugin
+				customResolveOptions: {
+					moduleDirectory:path.resolve('node_modules')
+				}
+			}),
+			commonjs({
+				include:path.resolve('node_modules/**'),
+				sourceMap: false
+			}),
+			(process.env.NODE_ENV === 'dev' && livereload('dist')),
+			(process.env.NODE_ENV === 'prod' && uglify()),
+			(process.env.NODE_ENV === 'dev' && serve({
+				contentBase:'dist',
+				host: 'localhost',
+				port: 3000,
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					foo: 'bar'
+				}
+			}))
+		],
+		external:['axios', 'vue', 'rxjs', 'rxjs/operators', 'rxjs/Rx', 'vue-property-decorator'],
+		output:{
+			dir:'dist',
+			format:'system',
+			sourcemap:false,
+			chunkFileNames:'[name].js'
+		}
+	},
+	{
+		input: glob.sync(path.join(__dirname, 'src/template/index.html')),
+		output: { dir: 'dist' },
+		plugins: [html({ flatten: false, rootDir: '_site' })],
 	}
-}];
+];
