@@ -130,6 +130,4 @@ export default class QuantitySelect extends Quantity {
 ```
 
 ### 6.추가된 기능
-- typescript로 개발되었고 es6 상위 버전으로 개발이 가능합니다.
-- 비동기로 자바스크립트를 가져옵니다. file format이 systemJs 형태로 빌드되어 저장됩니다.
-- vue도 포함되어있어 vue로 개발이 가능합니다.
+- systemJS를 사용하여 필요한 자바스크립트를 로드합니다.

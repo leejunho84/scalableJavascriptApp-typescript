@@ -9,7 +9,7 @@ export default class CategoryItem extends Component {
 		this.attrName = 'data-component-categoryitem';
 	}
 
-	componentDidMount(...components:any[]){
+	componentDidMount(...components:Array<any>){
 		const [gallery, select] = components;
 		const gelleryComponent:IGallery = gallery;
 		const selectComponent:ISelectbox = select;

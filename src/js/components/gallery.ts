@@ -13,6 +13,7 @@ export default class Gallery extends Component {
 		const _this = this;
 		const [indicator] = components;
 		const imgContainer = this.context.querySelector('.img-container');
+
 		if(imgContainer && indicator){
 			const indicatorData:IIndicatorData[] = [];
 			const imgs = imgContainer.querySelectorAll('img');

@@ -1,0 +1,130 @@
+@charset "UTF-8";
+
+// @import "fonts";
+@import "reset";
+
+
+.postcodify{
+	position:relative;
+	.input-group {z-index:200;}
+}
+
+.postcodelist{
+	display:none;
+	position:absolute;
+	width:calc( 100% - 1px );
+	top:29px;
+	left:0;
+	z-index:100;
+	&.active{display:block;}
+}
+
+
+.gallery-container {
+	position:relative;
+
+	.img-container {
+		height:340px;
+		position:relative;
+		overflow:hidden;
+
+		> img {
+			width:100%;
+			display:none;
+			&.active {display:block;}
+		}
+	}
+
+	.indicator {
+		width:100%;
+		position:absolute;
+		left:0;
+		bottom:10px;
+		text-align:center;
+	}
+
+	.icon-indicator {
+		margin-left:3px;
+
+		&:first-child {margin-left:3px;}
+		&:before {
+			display:inline-block;
+			content:'';
+			width:7px;
+			height:7px;
+			border-radius:50%;
+			background-color:#bfbfbf;
+			cursor:pointer;
+		}
+		&.active {
+			&:before{
+				background-color:#367ab7;
+			}
+		}
+	}
+}
+
+
+.select-container {
+	width:120px;
+	position:relative;
+	top:0;
+	left:0;
+
+	.select-head {
+		width:100%;
+		position:relative;
+		display:block;
+		box-sizing:border-box;
+		padding:5px 8px;
+		border-radius:4px;
+		color:#2c2c2c;
+
+		&:before {
+			display:block;
+			content:"\e259";
+			position:absolute;
+			top:8px;
+			right:8px;
+			font-family:'Glyphicons Halflings';
+			font-style:normal;
+			font-weight:400;
+			line-height:1;
+			-webkit-font-smoothing:antialiased;
+			-moz-osx-font-smoothing:grayscale;
+		}
+	}
+
+	.select-body{
+		display:none;
+		width:100%;
+		position:absolute;
+		top:31px;
+		padding:0;
+		border:1px solid #ccc;
+		border-radius:0 0 4px 4px;
+		background:#fff;
+
+		.list {
+			height:34px;
+			padding:5px 8px;
+			box-sizing:border-box;
+			border-top:1px solid #ccc;
+			list-style:none;
+
+			> a {color:#2c2c2c;}
+			&:first-child {border-top:0;}
+		}
+	}
+
+	> select, .select-container .select-head {
+		width:120px;
+		height:34px;
+		border:1px solid #ccc;
+		background-color:#fff;
+	}
+
+	&.checked {
+		.select-body {display:block;}
+	}
+}

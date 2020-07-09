@@ -1,21 +1,16 @@
 {
 	"compilerOptions": {
-		"target": "esnext",
+		"target": "es5",  //빌드될 타겟
 		"module": "system",
 		"moduleResolution": "node",
-		"lib": [
-			"esnext",
-			"esnext.asynciterable",
-			"dom"
-		],
+		"lib":["ES6", "ES7", "dom"], //빌드될때 포함될 스펙
 		"esModuleInterop": true,
 		"allowJs": true,
-		"sourceMap": true,
 		"strict": true,
 		"noEmit": true,
 		"experimentalDecorators":true,
 		"emitDecoratorMetadata": true,
-		"typeRoots": ["./node_modules/@types", "./@types"],
+		"typeRoots": ["./@types"], //사용자정의 타입
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./*"],

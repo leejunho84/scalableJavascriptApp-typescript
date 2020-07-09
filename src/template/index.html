@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<head></head>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./assets/css/style.css">
+</head>
 <body>
 
 <section>
@@ -12,40 +16,77 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Typescript</a>
+				<a class="navbar-brand" href="#">SJAA</a>
 			</div>
-
-			
 		</div>
-	</nav>
+	</nav> 
 
 	<div class="jumbotron">
 		<div class="container">
 			<h2 class="display-4">Scalable javascript application architecture</h2>
-			<p class="lead">Typescript를 이용한 확장가능한 자바스크립트 어플리케이션 개발</p>
-			<a class="btn btn-primary btn-lg" href="/components" role="button">Getting Started &raquo;</a>
+			<p class="lead">확장가능한 자바스크립트 어플리케이션 개발</p>
+			<a class="btn btn-primary btn-lg" href="/page/product" role="button">Getting Started &raquo;</a>
 		</div>
 	</div>
 	<div class="container">
-		<div class="row">
-			<div class="col-md-4">
-				<h2>Typescript</h2>
-				<p>Typescript는 javascript superSet으로 javascirpt + 정적타입이다. 코드 스타일이 명확해지고, 타입에러에 대해 컴파일전에 미리인지할수 있어 버그수정에 용이하며, interface를 통해 메소드 구현을 강제하여 동일한 동작을 보장할수 있다. </p>
-				<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+		<h3>module & component</h3>
+		<div class="row" data-module-category="{}">
+			<div class="col-sm-6 col-md-4">
+				<div class="thumbnail" data-component-categoryitem="{}">
+					<div class="gallery-container" data-component-gallery="{}">
+						<div class="img-container">
+							<img class="active" src="/assets/images/number1.png" alt="number1">
+							<img src="/assets/images/number2.png" alt="number2">
+							<img src="/assets/images/number3.png" alt="number3">
+						</div>
+						<div class="indicator" data-component-indicator="{}">
+							<i class="icon-indicator active"></i>
+						</div>
+					</div>
+					<div class="caption">
+						<h3>Thumbnail label</h3>
+						<p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+						<div class="select-container" data-component-selectbox="">
+							<select>
+								<option value="">Dropdown</option>
+								<option value="addcart">장바구니 담기</option>
+								<option value="direct">바로구매</option>
+							</select>
+						</div>
+					</div>
+				</div>
 			</div>
 
-			<div class="col-md-4">
-				<h2>Heading</h2>
-				<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-				<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-			</div>
 
-			<div class="col-md-4">
-				<h2>Heading</h2>
-				<p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-				<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+			<h3>Extend</h3>
+			<div class="row">
+				<div class="col-md-6">
+					<h4>component-postcodify (기본 주소검색)</h4>
+					<div class="postcodify" data-component-postcodify="{api://api.poesis.kr/post/search.php, required:true}">
+						<div class="input-group" data-component-textfield={required:true}>
+							<input type="text" class="form-control" placeholder="주소를 입력해주세요" aria-describedby="basic-addon2">
+							<span class="input-group-btn">
+								<button class="btn btn-default" type="button">검색</button>
+							</span>
+						</div>
+						<div class="result-wrap"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<h4>component-daumpost</h4>
+					<div class="daumpost" data-component-daumpost="{}">
+						<div class="input-group" data-component-textfield="{required:true}">
+							<input type="text" class="form-control" placeholder="주소를 입력해주세요" aria-describedby="basic-addon2">
+							<span class="input-group-btn">
+								<button class="btn btn-default" type="button">검색</button>
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
+			
+		
 
 		<hr>
 
@@ -55,6 +96,20 @@
 	</div>
 </section>
 
-<script src="/js/lib/system.js"></script>
-<script src="/js/index.js"></script>
+<script src="assets/js/libs/system.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="systemjs-importmap">
+{
+	"imports": {
+		"rxjs":"https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.0/rxjs.umd.min.js",
+		"rxjs/operators":"https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.0/rxjs.umd.min.js",
+		"vue":"./assets/js/libs/vue.min.js",
+		"axios":"./assets/js/libs/axios.min.js"
+	}
+}
+</script>
+<script>
+	System.import('./assets/js/index.js');
+</script>
+
 </body>

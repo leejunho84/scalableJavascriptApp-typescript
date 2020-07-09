@@ -5,8 +5,9 @@ export default class Category extends Module {
 	}
 
 	public moduleWillMount(...components:any[]){
-		components.map((component)=>{
-			//console.log(component);
+		console.log(components);
+		components.map(v=>{
+			// console.log(v);
 		});
 	}
 	public moduleWillUnmount(){}

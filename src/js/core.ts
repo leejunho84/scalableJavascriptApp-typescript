@@ -126,7 +126,8 @@ export default class Core {
 		})).then((resolve)=>{
 			mounted.call(target, ...resolve);
 		}).catch((err)=>{
-			throw new Error(err);
+			console.log(err);
+			// throw new Error(err);
 		});
 	}
 

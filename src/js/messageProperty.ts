@@ -1,4 +1,4 @@
-export enum MessageProperty {
+enum MessageProperty {
 	emptyProductId = '상품의 ID가 없습니다.',
 	notEnoughSkuQuantiry = '해당 상품의 재고가 없습니다.',
 	serverError = '일시적인 오류입니다. 잠시후 다시 시도해주세요.',
